@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>勁梅演光 Panda'Spectrum - 專業道具與工藝</title>
+    <style>
+        :root {
+            --theme-glow: rgba(0, 240, 255, 0.15);
+            --theme-accent: #00f0ff;
+            --bg-base: #0a0a0f;
+            --card-bg: rgba(22, 22, 30, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-main: #f0f0f5;
+            --text-sub: #8e8e9f;
+        }
+
+        body[data-theme="led"] { --theme-glow: rgba(0, 240, 255, 0.12); --theme-accent: #00f0ff; }
+        body[data-theme="fire"] { --theme-glow: rgba(255, 85, 0, 0.14); --theme-accent: #ff5500; }
+        body[data-theme="parts"] { --theme-glow: rgba(0, 255, 136, 0.12); --theme-accent: #00ff88; }
+        body[data-theme="knowledge"] { --theme-glow: rgba(255, 204, 0, 0.14); --theme-accent: #ffcc00; }
+        body[data-theme="about"] { --theme-glow: rgba(180, 75, 255, 0.15); --theme-accent: #b44bff; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, var(--theme-glow), transparent 70%);
+            transition: background-image 0.5s ease;
+        }
+
+        /* 頂部導覽列 */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.88);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        
+        /* 品牌區：桌機單行、手機自然堆疊 */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .brand-logo {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+            display: none;
+        }
+        .brand-text-block {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
+        .brand-main {
+            font-size: 1.08rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .brand-sub {
+            font-size: 0.68rem;
+            color: var(--text-sub);
+            letter-spacing: 0.3px;
+        }
+
+        /* 導覽列：5大類別標籤 */
+        nav.nav-bar {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            padding: 2px 0;
+        }
+        nav.nav-bar::-webkit-scrollbar { display: none; }
+        .nav-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-sub);
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        .nav-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .nav-btn.active {
+            color: #000;
+            background: var(--theme-accent);
+            font-weight: 600;
+            box-shadow: 0 0 12px var(--theme-accent);
+        }
+
+        /* 頂部右側動作區（音樂、語言、購物車） */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .btn-icon-compact {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 5px 9px;
+            border-radius: 14px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: 0.2s;
+            height: 30px;
+        }
+        .btn-icon-compact:hover { border-color: var(--theme-accent); }
+        
+        /* 音樂按鈕狀態 */
+        .music-btn.playing {
+            color: var(--theme-accent);
+            border-color: var(--theme-accent);
+            animation: pulse-border 2s infinite;
+        }
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(0, 240, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+        }
+
+        /* 主容器佈局 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 16px;
+            display: flex;
+            flex: 1;
+            gap: 24px;
+            width: 100%;
+        }
+
+        /* 側邊欄 */
+        aside.sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .sidebar-title {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-sub);
+            padding: 0 6px 6px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .item-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-sub);
+            padding: 9px 12px;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.88rem;
+        }
+        .item-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+        .item-btn.active {
+            color: #fff;
+            border-color: var(--theme-accent);
+            background: rgba(255,255,255,0.04);
+            box-shadow: inset 3px 0 0 var(--theme-accent);
+        }
+
+        /* 主展示區 */
+        main.main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            min-width: 0;
+        }
+
+        /* 輪播區塊 */
+        .carousel-wrapper {
+            position: relative;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            min-height: 280px;
+        }
+        .carousel-track {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+        .carousel-track::-webkit-scrollbar { display: none; }
+        .carousel-slide {
+            flex: 0 0 100%;
+            height: 100%;
+            scroll-snap-align: start;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0d0d14;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* Hero 卡片（第 1 張） */
+        .hero-card {
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(20,20,30,0.95), rgba(10,10,18,0.95));
+            border-left: 3px solid var(--theme-accent);
+            width: 100%;
+            height: 100%;
+        }
+        .hero-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+        .hero-tag {
+            font-size: 0.72rem;
+            background: rgba(255,255,255,0.08);
+            padding: 2px 7px;
+            border-radius: 4px;
+            color: var(--theme-accent);
+        }
+        .hero-title { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        .hero-desc { font-size: 0.88rem; color: var(--text-sub); line-height: 1.55; margin-bottom: 12px; }
+        .manual-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            color: var(--theme-accent);
+            text-decoration: none;
+            background: rgba(255,255,255,0.05);
+            padding: 5px 11px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            align-self: flex-start;
+        }
+
+        .carousel-indicator {
+            position: absolute;
+            bottom: 10px;
+            right: 12px;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(4px);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.72rem;
+            color: #fff;
+            pointer-events: none;
+        }
+
+        /* 矮小選購列 */
+        .compact-action-bar {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .price-badge { font-size: 1.15rem; font-weight: 700; color: var(--theme-accent); }
+        .btn-add-cart {
+            background: var(--theme-accent);
+            color: #000;
+            font-weight: 600;
+            border: none;
+            padding: 7px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        /* 多欄文字展開區 */
+        .deep-dive-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .dive-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+        }
+        .dive-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .dive-text { font-size: 0.82rem; color: var(--text-sub); line-height: 1.55; }
+
+        /* 購物清單滑出抽屜 */
+        .cart-drawer {
+            position: fixed;
+            top: 0; right: -360px;
+            width: 320px; height: 100vh;
+            background: #111118;
+            border-left: 1px solid var(--border-color);
+            z-index: 200;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.3s ease;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+        }
+        .cart-drawer.open { right: 0; }
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+        }
+        .cart-items { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .cart-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            background: rgba(255,255,255,0.03);
+            padding: 8px;
+            border-radius: 6px;
+        }
+        .cart-footer { border-top: 1px solid var(--border-color); padding-top: 12px; }
+        .copy-all-btn {
+            background: #28a745;
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            font-size: 0.88rem;
+        }
+
+        /* ========================================================
+           📱 關鍵優化：手機版頂端雙列結構與極度不壅塞設計 (<= 768px)
+        ======================================================== */
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column; /* 轉為垂直兩列 */
+                align-items: stretch;
+                padding: 8px 12px 6px;
+                gap: 8px;
+            }
+            .header-row-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+            /* 標題在手機雙行呈現 */
+            .brand-main { font-size: 1rem; }
+            .brand-sub { font-size: 0.62rem; }
+            
+            /* 分類標籤獨佔第二列，橫向全寬滑動 */
+            nav.nav-bar {
+                width: 100%;
+                justify-content: flex-start;
+                padding-bottom: 2px;
+                gap: 6px;
+            }
+            .nav-btn {
+                padding: 4px 10px;
+                font-size: 0.78rem;
+                flex-shrink: 0;
+            }
+
+            /* 主容器與多欄調整 */
+            .container { flex-direction: column; padding: 12px; gap: 14px; }
+            aside.sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding-bottom: 4px; }
+            .item-btn { white-space: nowrap; flex: 0 0 auto; font-size: 0.8rem; padding: 7px 10px; }
+            .deep-dive-grid { grid-template-columns: 1fr; }
+            .carousel-wrapper { aspect-ratio: 4 / 3; }
+        }
+    </style>
+</head>
+<body data-theme="led">
+
+    <!-- 頂部導覽列 -->
+    <header>
+        <div class="header-inner">
+            <!-- 手機版第 1 列：品牌 (左) + 迷你按鈕組 (右) -->
+            <div class="header-row-top">
+                <a href="#" class="brand">
+                    <img src="images/logo.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
+                    <div class="brand-text-block">
+                        <span class="brand-main">勁梅演光</span>
+                        <span class="brand-sub">Panda'Spectrum</span>
+                    </div>
+                </a>
+
+                <div class="header-actions">
+                    <!-- 背景音樂開關 (預設靜音，點選播放) -->
+                    <button class="btn-icon-compact music-btn" id="music-btn" onclick="toggleAudio()" title="播放/暫停背景氛圍音樂">
+                        🎵 <span id="music-status">BGM</span>
+                    </button>
+                    <!-- 純文字語系切換 (無地球標籤) -->
+                    <button class="btn-icon-compact" id="lang-btn" onclick="toggleLanguage()">
+                        <span id="lang-text">EN</span>
+                    </button>
+                    <!-- 緊湊購物車 -->
+                    <button class="btn-icon-compact" onclick="toggleCartDrawer()">
+                        🛒 <span id="cart-counter">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 手機版第 2 列：5 大核心標籤獨立平滑橫滑 -->
+            <nav class="nav-bar" id="top-nav">
+                <button class="nav-btn active" data-cat="led" data-theme="led">演光道具</button>
+                <button class="nav-btn" data-cat="fire" data-theme="fire">火舞裝備</button>
+                <button class="nav-btn" data-cat="parts" data-theme="parts">材料配件</button>
+                <button class="nav-btn" data-cat="knowledge" data-theme="knowledge">服務知識</button>
+                <button class="nav-btn" data-cat="about" data-theme="about">關於演光</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 背景音樂 Audio 元素 (可將路徑換成您的 mp3 檔案) -->
+    <audio id="bgm-player" loop preload="none">
+        <source src="audio/bgm.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- 主頁面架構 -->
+    <div class="container">
+        <!-- 側邊欄：子項目選單 -->
+        <aside class="sidebar">
+            <div class="sidebar-title" id="sidebar-label">項目清單</div>
+            <div id="sidebar-items" style="display: flex; flex-direction: column; gap: 6px; width: 100%;"></div>
+        </aside>
+
+        <!-- 主要展示區 -->
+        <main class="main-content">
+            <!-- 輪播元件 -->
+            <div class="carousel-wrapper">
+                <div class="carousel-track" id="carousel-track"></div>
+                <div class="carousel-indicator" id="carousel-num">1 / 1</div>
+            </div>
+
+            <!-- 選購列 (矮小緊湊版：知識庫與關於我會自動隱藏) -->
+            <div class="compact-action-bar" id="purchase-bar">
+                <div>
+                    <span style="font-size:0.75rem; color:var(--text-sub);">規格單價：</span>
+                    <span class="price-badge" id="product-price">$0</span>
+                </div>
+                <button class="btn-add-cart" id="btn-add-cart" onclick="addToCartCurrent()">+ 加入選購清單</button>
+            </div>
+
+            <!-- 詳細文字多欄展示 (Deep Dive) -->
+            <div class="deep-dive-grid" id="deep-dive-container">
+                <div class="dive-card">
+                    <div class="dive-title">⚙️ <span id="dive-title-1">工藝與特性解構</span></div>
+                    <div class="dive-text" id="dive-text-1">正在載入詳細內容...</div>
+                </div>
+                <div class="dive-card">
+                    <div class="dive-title">💡 <span id="dive-title-2">使用情境與保養指南</span></div>
+                    <div class="dive-text" id="dive-text-2">正在載入詳細內容...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 購物清單抽屜 -->
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3 style="font-size:1rem;">🛒 選購清單</h3>
+            <button onclick="toggleCartDrawer()" style="background:none; border:none; color:#fff; font-size:1.1rem; cursor:pointer;">✕</button>
+        </div>
+        <div class="cart-items" id="cart-list-container">
+            <p style="color:var(--text-sub); font-size:0.8rem;">目前無商品</p>
+        </div>
+        <div class="cart-footer">
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.85rem;">
+                <span>預估合計：</span>
+                <span id="cart-drawer-total" style="color:var(--theme-accent); font-weight:bold;">$0</span>
+            </div>
+            <button class="copy-all-btn" onclick="copyCartText()">📋 複製清單 (私訊粉專)</button>
+        </div>
+    </div>
+
+    <script>
+        let currentLang = 'zh';
+
+        const database = {
+            led: [
+                {
+                    id: "led_01",
+                    name_zh: "客製化全彩 LED 旋轉棍",
+                    name_en: "Custom Full-Color LED Staff",
+                    tags_zh: ["自主開發", "無線SYNC", "超高續航"],
+                    tags_en: ["Proprietary", "Wireless Sync", "High Battery Life"],
+                    price: 4500,
+                    imgPrefix: "images/staff_led_",
+                    manualUrl: "https://example.com/manual-led-staff.pdf",
+                    desc_zh: "專為極致光影演出打造，內部採用微控制器精密驅動，支援多種即時光效模式與無線編組傳輸。",
+                    desc_en: "Built for stage performance with real-time wireless cues and dynamic light visual synthesis.",
+                    dive1_zh: "採用高透光防爆 PC 管封裝，具備耐摔、平衡性極佳的重心設計，適合接觸與雙棍拋接技巧。",
+                    dive1_en: "Encased in high-impact polycarbonate tubes for optimal balance and durability.",
+                    dive2_zh: "支援 Type-C 快充，充電時指示燈紅轉藍即代表飽電。請避免在火源直接燒烤。",
+                    dive2_en: "Supports Type-C fast charging. Store in a cool, dry environment away from heat sources."
+                }
+            ],
+            fire: [
+                {
+                    id: "fire_01",
+                    name_zh: "Technora 火舞繩練 (進階款)",
+                    name_en: "Technora Fire Leash (Pro)",
+                    tags_zh: ["阻燃纖維", "誤差<0.5cm", "超越Kevlar"],
+                    tags_en: ["Flame Retardant", "Precision Length", "Beyond Kevlar"],
+                    price: 1200,
+                    imgPrefix: "images/fire_technora_",
+                    manualUrl: "https://example.com/manual-technora.pdf",
+                    desc_zh: "火具鐵鍊的終極替代方案。兼具輕量、柔軟手感與慢熱傳導特性，大幅減少傳統鐵鍊燙傷與物理打擊傷害。",
+                    desc_en: "The ultimate chain replacement. Extremely lightweight, soft hand-feel, and slow thermal conduction.",
+                    dive1_zh: "高密度編織技術，每條均經多次微調拉伸，將長度手工誤差精確鎖定在 0.5cm 以內。",
+                    dive1_en: "High-density weave with strict manual tension adjustment to keep length variance under 0.5 cm.",
+                    dive2_zh: "定期使用乾布擦拭煤油殘漬。雖然防火，但長期接觸火焰仍會自然老化，建議定期檢查外觀是否有斷絲。",
+                    dive2_en: "Inspect regularly for fraying. Wipe clean after fuel burns to prolong fiber lifespan."
+                }
+            ],
+            parts: [
+                {
+                    id: "parts_01",
+                    name_zh: "醋酸布膠帶 (12mm)",
+                    name_en: "Acetate Cloth Tape (12mm)",
+                    tags_zh: ["布面微摩擦", "耐溫不溢膠", "Threeworlds收尾同款"],
+                    tags_en: ["Cloth Friction", "No Residue", "Staff Finishing"],
+                    price: 99,
+                    imgPrefix: "images/mat_acetate_",
+                    manualUrl: "",
+                    desc_zh: "Threeworlds 組合棍收邊的秘密武器！不同於傳統絕緣膠帶易出油脫膠，此款具備細緻布紋與長效固定力。",
+                    desc_en: "The secret finishing tape for modular staffs. Fabric texture prevents residue and adhesive failure.",
+                    dive1_zh: "耐溫範圍達 105℃ ~ 130℃，具備良好從形性與絕緣性能，黏貼於不規則握把弧度上依舊平整服貼。",
+                    dive1_en: "Temperature rating up to 130°C. Highly conformable on irregular surfaces and grips.",
+                    dive2_zh: "使用時稍微拉緊後貼附，最後一圈自然貼合不拉伸，可確保數月不翹邊、不黏手。",
+                    dive2_en: "Wrap with light tension; apply the final loop without tension to prevent edge lifting."
+                },
+                {
+                    id: "parts_02",
+                    name_zh: "矽膠自融膠帶 (透明)",
+                    name_en: "Silicone Self-Fusing Tape (Clear)",
+                    tags_zh: ["無膠水", "耐溫260℃", "LED收邊透明首選"],
+                    tags_en: ["No Glue", "Rated 260°C", "Ideal for Clear LED"],
+                    price: 180,
+                    imgPrefix: "images/mat_silicone_",
+                    manualUrl: "",
+                    desc_zh: "完全無背膠！拉伸纏繞後自身於 24 小時內永久融合為一體。極致耐高溫與高壓絕緣，火具防燙隔熱首選。",
+                    desc_en: "Zero adhesive residue. Fuses to itself within 24 hours. Rated up to 260°C for thermal shielding.",
+                    dive1_zh: "透明度高，覆蓋在 LED 燈條走線處不遮擋流光；伸長率可達 300%，能緊密包覆各種接頭。",
+                    dive1_en: "High clarity maintains full LED brightness. Stretches up to 300% for watertight wrapping.",
+                    dive2_zh: "纏繞時需拉伸至原本長度的 1.5 ~ 2 倍以激發分子自融特性。一旦融合後需用刀片切割移除。",
+                    dive2_en: "Stretch 1.5x to 2x during application to activate fusing. Must be sliced to remove once cured."
+                }
+            ],
+            knowledge: [
+                {
+                    id: "know_01",
+                    name_zh: "國外代訂與客製指南",
+                    name_en: "Global Sourcing & Custom Guide",
+                    tags_zh: ["代購指南", "Threeworlds", "Flowtoys"],
+                    tags_en: ["Sourcing", "Direct Import", "Support"],
+                    price: 0,
+                    imgPrefix: "images/info_order_",
+                    manualUrl: "https://example.com/custom-rules.pdf",
+                    desc_zh: "提供國際知名品牌（如 Threeworlds、Flowtoys）道具與零件代訂服務，協助避開昂貴關稅與國際運送損壞風險。",
+                    desc_en: "Assisting players in importing high-end props from worldwide brands safely with unified shipping.",
+                    dive1_zh: "定期每月中旬集單出貨。非標品、特別長度之碳纖維桿均可來信討論代訂可行性。",
+                    dive1_en: "Orders placed mid-month. Custom length rods and accessories welcome for inquiries.",
+                    dive2_zh: "收到代訂商品若有原廠瑕疵，勁梅演光提供在地第一線檢測與代向原廠溝通退換之服務。",
+                    dive2_en: "First-line inspection and warranty liaison provided directly by our studio."
+                }
+            ],
+            about: [
+                {
+                    id: "about_01",
+                    name_zh: "關於 勁梅演光",
+                    name_en: "About Panda'Spectrum",
+                    tags_zh: ["品牌創立2016", "流動藝術", "光火工藝"],
+                    tags_en: ["Since 2016", "Flow Arts", "Craftsmanship"],
+                    price: 0,
+                    imgPrefix: "images/about_hero_",
+                    manualUrl: "https://instagram.com",
+                    desc_zh: "致力於研發高性能 LED 演出裝備與極致火舞耗材。結合工程學、嵌入式電路與手工編織工藝，為表演者帶來最安心的手感。",
+                    desc_en: "Dedicated to designing elite LED props and high-grade fire performance gear since 2016.",
+                    dive1_zh: "每一支客製棍、每一條 Technora 繩練，皆由主理人與匠人親自手工調試配重與平衡性。",
+                    dive1_en: "Every staff and Technora leash is personally balanced and tested before leaving the workshop.",
+                    dive2_zh: "追蹤官方 IG / FB 粉專：隨時掌握工作坊開課動態、新品開箱與舞台光軌視覺展演。",
+                    dive2_en: "Follow our social channels for workshops, maintenance tutorials, and stage updates."
+                }
+            ]
+        };
+
+        let currentCat = 'led';
+        let currentItem = database.led[0];
+        let cart = {};
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setupNavigation();
+            renderCategory(currentCat);
+            
+            const track = document.getElementById('carousel-track');
+            track.addEventListener('scroll', () => {
+                const index = Math.round(track.scrollLeft / track.clientWidth);
+                const total = track.children.length;
+                document.getElementById('carousel-num').innerText = `${index + 1} / ${total}`;
+            });
+        });
+
+        function setupNavigation() {
+            const buttons = document.querySelectorAll('#top-nav .nav-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    buttons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const cat = btn.dataset.cat;
+                    const theme = btn.dataset.theme;
+                    document.body.setAttribute('data-theme', theme);
+                    currentCat = cat;
+                    renderCategory(cat);
+                });
+            });
+        }
+
+        function renderCategory(catKey) {
+            const items = database[catKey] || [];
+            const sidebarContainer = document.getElementById('sidebar-items');
+            sidebarContainer.innerHTML = '';
+
+            const purchaseBar = document.getElementById('purchase-bar');
+            if (catKey === 'knowledge' || catKey === 'about') {
+                purchaseBar.style.display = 'none';
+            } else {
+                purchaseBar.style.display = 'flex';
+            }
+
+            items.forEach((item, index) => {
+                const btn = document.createElement('button');
+                btn.className = `item-btn ${index === 0 ? 'active' : ''}`;
+                btn.innerText = currentLang === 'zh' ? item.name_zh : item.name_en;
+                btn.onclick = () => {
+                    document.querySelectorAll('.item-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    loadItemDetails(item);
+                };
+                sidebarContainer.appendChild(btn);
+            });
+
+            if (items.length > 0) {
+                loadItemDetails(items[0]);
+            }
+        }
+
+        async function loadItemDetails(item) {
+            currentItem = item;
+            document.getElementById('product-price').innerText = item.price > 0 ? `$${item.price}` : '客製諮詢';
+            document.getElementById('dive-text-1').innerText = currentLang === 'zh' ? item.dive1_zh : item.dive1_en;
+            document.getElementById('dive-text-2').innerText = currentLang === 'zh' ? item.dive2_zh : item.dive2_en;
+
+            const track = document.getElementById('carousel-track');
+            track.innerHTML = '';
+
+            const tags = currentLang === 'zh' ? item.tags_zh : item.tags_en;
+            const title = currentLang === 'zh' ? item.name_zh : item.name_en;
+            const desc = currentLang === 'zh' ? item.desc_zh : item.desc_en;
+
+            const manualBtnHtml = item.manualUrl 
+                ? `<a href="${item.manualUrl}" target="_blank" class="manual-link-btn">📖 ${currentLang === 'zh' ? '說明書 / 規格' : 'Documentation'} ↗</a>` 
+                : '';
+
+            const heroSlide = document.createElement('div');
+            heroSlide.className = 'carousel-slide';
+            heroSlide.innerHTML = `
+                <div class="hero-card">
+                    <div>
+                        <div class="hero-tags">
+                            ${tags.map(t => `<span class="hero-tag">${t}</span>`).join('')}
+                        </div>
+                        <div class="hero-title">${title}</div>
+                        <div class="hero-desc">${desc}</div>
+                    </div>
+                    ${manualBtnHtml}
+                </div>
+            `;
+            track.appendChild(heroSlide);
+
+            const images = await probeSequenceImages(item.imgPrefix);
+            if (images.length === 0) {
+                images.push(createSvgFallback(title));
+            }
+
+            images.forEach(src => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `<img src="${src}" alt="${title}">`;
+                track.appendChild(slide);
+            });
+
+            track.scrollLeft = 0;
+            document.getElementById('carousel-num').innerText = `1 / ${track.children.length}`;
+        }
+
+        async function probeSequenceImages(prefix, max = 10) {
+            const results = [];
+            for (let i = 1; i <= max; i++) {
+                const num = String(i).padStart(2, '0');
+                const url = `${prefix}${num}.jpg`;
+                const exists = await checkImageExists(url);
+                if (exists) results.push(url);
+                else break;
+            }
+            return results;
+        }
+
+        function checkImageExists(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+            });
+        }
+
+        function createSvgFallback(title) {
+            const encoded = encodeURIComponent(`
+                <svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+                    <rect width="800" height="450" fill="#13131c"/>
+                    <circle cx="400" cy="225" r="80" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+                    <text x="400" y="230" fill="rgba(255,255,255,0.4)" font-size="16" font-family="sans-serif" text-anchor="middle">
+                        [ 圖片庫: ${title} ]
+                    </text>
+                </svg>
+            `);
+            return `data:image/svg+xml;utf8,${encoded}`;
+        }
+
+        /* 語系切換：僅顯示 ZH 或 EN */
+        function toggleLanguage() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            document.getElementById('lang-text').innerText = currentLang === 'zh' ? 'EN' : 'ZH';
+            renderCategory(currentCat);
+        }
+
+        /* 音樂播放 / 暫停控制 */
+        function toggleAudio() {
+            const audio = document.getElementById('bgm-player');
+            const btn = document.getElementById('music-btn');
+            const status = document.getElementById('music-status');
+
+            if (audio.paused) {
+                audio.play().then(() => {
+                    btn.classList.add('playing');
+                    status.innerText = 'ON';
+                }).catch(err => {
+                    console.warn("音訊播放被瀏覽器阻擋，或找不到 audio/bgm.mp3 檔案：", err);
+                    alert("請確認專案資料夾內已放置 audio/bgm.mp3 音訊檔案！");
+                });
+            } else {
+                audio.pause();
+                btn.classList.remove('playing');
+                status.innerText = 'BGM';
+            }
+        }
+
+        /* 購物車功能 */
+        function addToCartCurrent() {
+            if (!currentItem || currentItem.price === 0) return;
+            cart[currentItem.id] = (cart[currentItem.id] || 0) + 1;
+            updateCartUI();
+            toggleCartDrawer(true);
+        }
+
+        function updateCartUI() {
+            let count = 0;
+            let total = 0;
+            const container = document.getElementById('cart-list-container');
+            container.innerHTML = '';
+
+            const allProducts = Object.values(database).flat();
+
+            Object.keys(cart).forEach(id => {
+                const qty = cart[id];
+                count += qty;
+                const prod = allProducts.find(p => p.id === id);
+                if (prod) {
+                    const subtotal = prod.price * qty;
+                    total += subtotal;
+
+                    const row = document.createElement('div');
+                    row.className = 'cart-row';
+                    row.innerHTML = `
+                        <div>
+                            <div>${currentLang === 'zh' ? prod.name_zh : prod.name_en}</div>
+                            <div style="color:var(--text-sub); font-size:0.75rem;">$${prod.price} × ${qty}</div>
+                        </div>
+                        <div style="font-weight:bold; color:var(--theme-accent);">$${subtotal}</div>
+                    `;
+                    container.appendChild(row);
+                }
+            });
+
+            document.getElementById('cart-counter').innerText = count;
+            document.getElementById('cart-drawer-total').innerText = `$${total}`;
+        }
+
+        function toggleCartDrawer(forceOpen = false) {
+            const drawer = document.getElementById('cart-drawer');
+            if (forceOpen) drawer.classList.add('open');
+            else drawer.classList.toggle('open');
+        }
+
+        function copyCartText() {
+            const allProducts = Object.values(database).flat();
+            const keys = Object.keys(cart);
+            if (keys.length === 0) {
+                alert('清單內尚無商品！');
+                return;
+            }
+
+            let text = `👋 您好！我想向【勁梅演光】諮詢並訂購以下品項：\n`;
+            text += `=========================\n`;
+            let total = 0;
+            keys.forEach(id => {
+                const p = allProducts.find(item => item.id === id);
+                const qty = cart[id];
+                const sub = p.price * qty;
+                total += sub;
+                text += `🔸 ${p.name_zh} × ${qty} ($${sub})\n`;
+            });
+            text += `=========================\n`;
+            text += `💰 預估金額：$${total}\n\n`;
+            text += `（備註：長度規格 / 特殊訂製需求請在此填寫）`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('清單已成功複製！請直接前往 FB / IG 私訊貼上對話即可 👌');
+            });
+        }
+    </script>
+</body>
+</html>

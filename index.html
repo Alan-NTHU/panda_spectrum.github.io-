@@ -428,7 +428,10 @@
             <!-- 手機版第 1 列：品牌 (左) + 迷你按鈕組 (右) -->
             <div class="header-row-top">
                 <a href="#" class="brand">
-                    <img src="images/logo.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
+                    <!-- 改成這樣：增加 onload 事件，載入成功就自動顯現 -->
+                    <img src="images/logo.png" alt="Logo" class="brand-logo" id="main-logo" 
+                         onload="this.style.display='inline-block'" 
+                         onerror="this.style.display='none'">
                     <div class="brand-text-block">
                         <span class="brand-main">勁梅演光</span>
                         <span class="brand-sub">Panda'Spectrum</span>
@@ -745,15 +748,29 @@
             track.scrollLeft = 0;
             document.getElementById('carousel-num').innerText = `1 / ${track.children.length}`;
         }
-
+        
         async function probeSequenceImages(prefix, max = 10) {
             const results = [];
+            const extensions = ['.jpg', '.png']; // 支援兩種副檔名
+        
             for (let i = 1; i <= max; i++) {
                 const num = String(i).padStart(2, '0');
-                const url = `${prefix}${num}.jpg`;
-                const exists = await checkImageExists(url);
-                if (exists) results.push(url);
-                else break;
+                let foundUrl = null;
+        
+                for (const ext of extensions) {
+                    const url = `${prefix}${num}${ext}`;
+                    const exists = await checkImageExists(url);
+                    if (exists) {
+                        foundUrl = url;
+                        break;
+                    }
+                }
+        
+                if (foundUrl) {
+                    results.push(foundUrl);
+                } else {
+                    break; // 該序號兩種格式都沒有，中斷探測
+                }
             }
             return results;
         }

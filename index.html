@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10140355</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -157,7 +157,7 @@
             height: 30px;
         }
         .btn-icon-compact:hover { border-color: var(--theme-accent); }
-
+        
         .music-btn.playing {
             color: var(--theme-accent);
             border-color: var(--theme-accent);
@@ -489,7 +489,14 @@
             transition: color 0.2s;
         }
         .footer-links a:hover { color: var(--theme-accent); }
-
+        /* 1. 全域增強：所有按鈕在手機觸控（:active）時的微縮與按壓反饋 */
+        .item-btn:active, 
+        .nav-btn:active, 
+        .btn-icon-compact:active, 
+        .btn-add-cart:active {
+            transform: scale(0.96); /* 手指按下一瞬間輕微縮小，極具手感 */
+            transition: transform 0.08s ease;
+        }
         /* ========================================================
            📱 手機版 RWD 徹底修正 (<= 768px)
         ======================================================== */
@@ -527,8 +534,9 @@
                 padding: 4px 10px;
                 font-size: 0.78rem;
                 flex-shrink: 0;
+                -webkit-tap-highlight-color: transparent;
             }
-
+            
             .container { flex-direction: column; padding: 12px; gap: 14px; }
             
             /* 📱 子項目清單手機版：整齊 2 欄網格排列，不冗長也不擠壓 */
@@ -547,15 +555,26 @@
                 width: 100%;
             }
             .item-btn {
-                padding: 8px 8px;
-                font-size: 0.8rem;
-                text-align: center;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                border-radius: 6px;
+                    padding: 9px 8px;
+                    font-size: 0.8rem;
+                    text-align: center;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    border-radius: 8px;
+                    background: var(--card-bg);
+                    border: 1px solid var(--border-color);
+                    color: var(--text-sub);
+                    transition: all 0.2s ease;
+                    -webkit-tap-highlight-color: transparent; /* 消除 Android/iOS 原生醜陋的藍色/灰色點擊高亮方塊 */
             }
-
+            .item-btn.active {
+                    color: #fff;
+                    border-color: var(--theme-accent);
+                    background: rgba(255, 255, 255, 0.08);
+                    box-shadow: 0 0 10px var(--theme-glow), inset 0 0 6px var(--theme-glow);
+                    font-weight: 600;
+            }
             .deep-dive-grid { grid-template-columns: 1fr; }
             .carousel-wrapper { aspect-ratio: 4 / 3; }
             
@@ -577,8 +596,8 @@
                     <img src="images/logo.png" alt="Logo" class="brand-logo" id="main-logo" 
                          onload="this.style.display='inline-block'" onerror="this.style.display='none'">
                     <div class="brand-text-block">
-                        <span class="brand-main">勁梅演光 version 1014.0345</span>
-                        <span class="brand-sub">Panda'Spectrum, 2026</span>
+                        <span class="brand-main">勁梅演光</span>
+                        <span class="brand-sub">Panda'Spectrum</span>
                     </div>
                 </a>
 

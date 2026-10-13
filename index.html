@@ -425,71 +425,170 @@
         }
 
         /* 手機版優化 */
+            @media (max-width: 768px) {
+                
+                .header-inner {
+                    flex-direction: column;
+                    align-items: stretch;
+                    padding: 8px 12px 6px;
+                    gap: 8px;
+                }
+                .header-row-top {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                }
+                .brand-main { font-size: 1rem; }
+                .brand-sub { font-size: 0.62rem; }
+                
+                nav.nav-bar {
+                    width: 100%;
+                    justify-content: flex-start;
+                    padding-bottom: 2px;
+                    gap: 6px;
+                }
+                .nav-btn {
+                    padding: 4px 10px;
+                    font-size: 0.78rem;
+                    flex-shrink: 0;
+                }
+                .ambient-glow {
+                    width: 340px;
+                    height: 220px;
+                    top: -60px;
+                    filter: blur(55px);
+                    opacity: 0.15;
+                }
+                .container { flex-direction: column; padding: 12px; gap: 14px; }
+                aside.sidebar {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row;
+                    overflow-x: auto;
+                    scroll-snap-type: x proximity;
+                    gap: 6px;
+                    padding-bottom: 6px;
+                    /* 隱藏原生粗糙滾動條，保持滑順 */
+                    scrollbar-width: none;
+                    -webkit-overflow-scrolling: touch;
+                }
+                .item-btn {
+                    flex: 0 0 auto;
+                    padding: 6px 12px;
+                    font-size: 0.8rem;
+                    border-radius: 16px; /* 膠囊狀更省空間且好點按 */
+                    scroll-snap-align: start;
+                }
+                .deep-dive-grid { grid-template-columns: 1fr; }
+                .carousel-wrapper { aspect-ratio: 4 / 3; }
+            }
+            .cart-backdrop {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.45); /* 輕微暗化背景，突顯抽屜 */
+                backdrop-filter: blur(3px);      /* 輕微模糊背景質感 */
+                z-index: 150;                     /* 高於內容，但低於抽屜 */
+                opacity: 0;
+                pointer-events: none;            /* 平常不擋住點擊 */
+                transition: opacity 0.3s ease;
+            }    
+        
+        /* 抽屜打開時，啟動遮罩 */
+        .cart-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;            /* 啟用點擊，點擊即可關閉 */
+        }
+        
+        /* 確保購物車抽屜在遮罩之上 */
+        .cart-drawer {
+            z-index: 200;
+            /* 其餘樣式保持不變 */
+        }
+        /* 頁尾精緻微光排版 */
+        footer.site-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            background: rgba(8, 8, 12, 0.95);
+            padding: 32px 16px 24px;
+            position: relative;
+            z-index: 10;
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 14px;
+        }
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .footer-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+        .footer-slogan {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            font-style: italic;
+        }
+        .footer-disclaimer {
+            max-width: 640px;
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.6;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .footer-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            margin-top: 6px;
+        }
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .footer-links a {
+            color: var(--text-sub);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover {
+            color: var(--theme-accent);
+        }
+        
+        /* 手機版微調 */
         @media (max-width: 768px) {
-            .header-inner {
+            footer.site-footer {
+                padding: 24px 12px 20px;
+            }
+            .footer-disclaimer {
+                font-size: 0.68rem;
+            }
+            .footer-meta {
                 flex-direction: column;
-                align-items: stretch;
-                padding: 8px 12px 6px;
-                gap: 8px;
-            }
-            .header-row-top {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-            }
-            .brand-main { font-size: 1rem; }
-            .brand-sub { font-size: 0.62rem; }
-            
-            nav.nav-bar {
-                width: 100%;
-                justify-content: flex-start;
-                padding-bottom: 2px;
                 gap: 6px;
             }
-            .nav-btn {
-                padding: 4px 10px;
-                font-size: 0.78rem;
-                flex-shrink: 0;
-            }
-            .ambient-glow {
-                width: 340px;
-                height: 220px;
-                top: -60px;
-                filter: blur(55px);
-                opacity: 0.15;
-            }
-            .container { flex-direction: column; padding: 12px; gap: 14px; }
-            aside.sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding-bottom: 4px; }
-            .item-btn { white-space: nowrap; flex: 0 0 auto; font-size: 0.8rem; padding: 7px 10px; }
-            .deep-dive-grid { grid-template-columns: 1fr; }
-            .carousel-wrapper { aspect-ratio: 4 / 3; }
         }
-        .cart-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.45); /* 輕微暗化背景，突顯抽屜 */
-    backdrop-filter: blur(3px);      /* 輕微模糊背景質感 */
-    z-index: 150;                     /* 高於內容，但低於抽屜 */
-    opacity: 0;
-    pointer-events: none;            /* 平常不擋住點擊 */
-    transition: opacity 0.3s ease;
-}
-
-/* 抽屜打開時，啟動遮罩 */
-.cart-backdrop.open {
-    opacity: 1;
-    pointer-events: auto;            /* 啟用點擊，點擊即可關閉 */
-}
-
-/* 確保購物車抽屜在遮罩之上 */
-.cart-drawer {
-    z-index: 200;
-    /* 其餘樣式保持不變 */
-}
     </style>
 </head>
 <body data-theme="led">
@@ -501,7 +600,7 @@
                     <img src="images/logo.png" alt="Logo" class="brand-logo" id="main-logo" 
                          onload="this.style.display='inline-block'" onerror="this.style.display='none'">
                     <div class="brand-text-block">
-                        <span class="brand-main">勁梅演光 version 1014.0258 </span>
+                        <span class="brand-main">勁梅演光 version 1014.0320 </span>
                         <span class="brand-sub">Panda'Spectrum, 2026</span>
                     </div>
                 </a>
@@ -831,6 +930,12 @@
             }
 
             updateCartUI();
+            const safetyEl = document.getElementById('footer-safety-notice');
+            if (safetyEl) {
+                safetyEl.innerText = currentLang === 'zh'
+                    ? '⚠️ 本站火舞耗材與客製電路裝備專為專業演出與訓練設計，請嚴格遵守火具點火與鋰電池充放電安全規範。'
+                    : '⚠️ Props and electronics are engineered for professional flow arts. Users assume full responsibility for fire and electrical safety.';
+            }
         }
         let lastBgmIndex = -1;
         
@@ -1010,5 +1115,31 @@
             });
         }
     </script>
+        <!-- 頁尾宣告區 -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <span class="footer-title">勁梅演光 Panda'Spectrum</span>
+                <span class="footer-slogan">Crafted with precision for stage & flow performers.</span>
+            </div>
+    
+            <div class="footer-disclaimer">
+                <p id="footer-safety-notice">
+                    ⚠️ 本站火舞耗材與客製電路裝備專為專業演出與訓練設計，請嚴格遵守火具點火與鋰電池充放電安全規範。
+                </p>
+            </div>
+    
+            <div class="footer-meta">
+                <span>© 2016–2026 Panda'Spectrum. All Rights Reserved.</span>
+                <div class="footer-links">
+                    <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+                    <span>•</span>
+                    <a href="https://facebook.com" target="_blank" rel="noopener">Facebook</a>
+                    <span>•</span>
+                    <a href="mailto:contact@pandaspectrum.com">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

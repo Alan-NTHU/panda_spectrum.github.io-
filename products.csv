@@ -1,0 +1,43 @@
+category,id,name_zh,name_en,tags_zh,tags_en,price,imgPrefix,manualUrl,desc_zh,desc_en,dive1_zh,dive1_en,dive2_zh,dive2_en,
+led,led_01,客製化全彩 LED 旋轉棍,Custom Full-Color LED Staff,自主開發/無線SYNC/超高續航,Proprietary/Wireless Sync/High Battery Life,4500,images/staff_led_,https://example.com/manual-led-staff.pdf,"專為極致光影演出打造。
+內部採用精密微控制器驅動，支援即時光效模式與無線編組傳輸。
+wryyy","Built for stage performance.
+Features real-time wireless cues and dynamic visual synthesis.","1. 高透光防爆 PC 管封裝
+2. 完美配重平衡，適合 Contact 技巧
+3. 模組化快拆設計","1. High-impact polycarbonate tube
+2. Balanced weight for contact flow
+3. Modular quick-release structure","支援 Type-C 快充。
+充電時紅燈轉藍燈代表飽電，請避免火源直接燒烤。","Supports Type-C fast charging.
+Avoid direct contact with fire or excessive heat.",
+fire,fire_01,Technora 火舞繩練 (進階款),Technora Fire Leash (Pro),阻燃纖維/誤差<0.5cm/超越Kevlar,Flame Retardant/Precision Length/Beyond Kevlar,1200,images/fire_technora_,,,"火具鐵鍊的終極替代材料。
+兼具輕量、柔軟手感與慢熱傳導特性，大幅減少燙傷與碰撞物理傷害。","The ultimate chain replacement.
+Extremely lightweight, soft hand-feel, and slow heat conduction.","高密度手工編織技術。
+每條均經多次微調拉伸，將長度誤差精確鎖定在 0.5cm 以內。","High-density manual weave.
+Tension-adjusted to keep length variance strictly under 0.5 cm.","定期使用乾布擦拭燃料殘漬。
+雖然防火，但長期接觸火焰仍會自然老化，請定期檢查外觀是否有斷絲。","Inspect regularly for fraying.
+Wipe clean after use to prolong service life."
+portfolio,port_01,光軌視覺演出實錄,Light Trail Visual Performance,舞台紀錄/長曝光攝影/演出編排,Stage Record/Long Exposure/Choreography,0,images/port_stage_,,,"勁梅演光團隊歷年光影演出與長曝光光軌紀錄。
+結合程式控光與高難度流動肢體展演。",Performance archives and light painting visual projects by Panda'Spectrum.,"多通道無線同步控光系統。
+在暗場中呈現銳利幾何線條與流動光色漸變。",Multi-channel wireless light control creating vivid geometric spatial patterns.,提供商業演出委託、跨界藝術合作與舞台編排技術支援。,"Available for commercial showcases, art collaborations, and technical prop design."
+parts,parts_01,醋酸布膠帶 (12mm),Acetate Cloth Tape (12mm),布面微摩擦/耐溫不溢膠/Threeworlds收尾同款,Cloth Friction/No Residue/Staff Finishing,99,images/mat_acetate_,,,"Threeworlds 組合棍收邊的秘密武器！
+細緻布紋手感，絕不溢膠脫膠。","The secret finishing tape for modular staffs.
+Fabric texture prevents sticky glue residue.","耐溫範圍達 105℃ ~ 130℃。
+具備良好從形性與絕緣性能，黏貼於不規則曲面上依然服貼。","Rated up to 130°C.
+Highly conformable on grips and irregular surfaces.",使用時稍微拉緊貼附，最後一圈自然貼合不拉伸，可保數月不翹邊。,Wrap with light tension; apply the final loop without stretching to prevent peeling.
+parts,parts_02,矽膠自融膠帶 (透明),Silicone Self-Fusing Tape (Clear),無膠水/耐溫260℃/LED收邊透明首選,No Glue/Rated 260°C/Ideal for Clear LED,180,images/mat_silicone_,,,"完全無背膠！拉伸後自身永久融合。
+極致耐高溫與高壓絕緣，火具防燙隔熱首選。","Zero adhesive residue. Fuses to itself within 24 hours.
+Rated up to 260°C for heat shielding.",透明度高，覆蓋在 LED 燈條走線處不遮擋光線；伸長率可達 300%。,High clarity maintains full brightness. Stretches up to 300% for watertight seals.,纏繞時需拉伸至原本長度的 1.5 ~ 2 倍以激發分子自融特性。,Stretch 1.5x to 2x during application to activate fusing.
+agency,agen_01,Threeworlds 國際品牌代訂,Threeworlds Props Agency,澳洲原裝/組合棍/Dragon Staff,Imported/Modular Staff/Dragon Staff,0,images/agency_tw_,,,"澳洲頂級模組化火舞與接觸道具品牌官方正規進口諮詢。
+協助處理國際關稅與海運保障。","Official sourcing assistance for Threeworlds modular gear, hubs, and accessories.",每月定期集單，可訂購鋁合金接頭、碳纖維中心管與龍棍頭 (Hubs)。,"Regular group orders covering aluminum connectors, carbon fiber cores, and hubs.",在地現貨耗材支援與原廠保修諮詢窗口。,Local consumable support and warranty consulting.
+service,serv_01,火具/光具保養維修與客製,Maintenance & Custom Build,換繩換頭/配重微調/握把布重新包覆,Re-wicking/Re-balancing/Re-gripping,0,images/serv_repair_,,,"道具手感衰退或耗損？
+我們提供專業重新纏繞握把、Technora 繩練換新與重心微調服務。","Professional prop overhaul, re-gripping, Technora leash replacements, and balance tuning.",根據表演者手長、肩寬與旋轉習慣，客製計算最合適的重心點與握距。,"Custom balancing based on your height, wingspan, and spinning style.",歡迎私訊粉專附上現有道具照片，即可獲得免費評估與報價。,Message our social pages with photos of your current prop for a free estimate.
+tutorial,tuto_01,Technora 繩練安全檢驗手冊,Technora Safety Inspection,安全第一/耗損評估/保養指南,Safety First/Wear Assessment/Maintenance,0,images/tuto_rope_,,,"火舞表演安全至關重要！
+本篇教你如何以 3 步驟檢視繩練磨耗程度，判斷何時必須更換。","Prop safety is non-negotiable.
+A concise 3-step guide to assessing wear and knowing when to retire your rope.","1. 觀察外層纖維起毛情況
+2. 檢查連接環受力點是否有壓扁變形
+3. 彎折測試是否有內部硬化脆裂感","1. Check for surface fuzzing
+2. Inspect load points at swivels for deformation
+3. Bend test to feel for internal brittleness",若發現直徑磨損縮小超過 20%，請務必立即停止點火使用並進行更換。,"If diameter is reduced by more than 20%, retire immediately."
+about,about_01,關於 勁梅演光,About Panda'Spectrum,品牌創立2016/流動藝術/光火工藝,Since 2016/Flow Arts/Craftsmanship,0,images/about_hero_,https://instagram.com,"致力於研發高性能 LED 演出裝備與極致火舞耗材。
+結合工程學、嵌入式電路與手工編織工藝，為表演者帶來最安心的手感。","Dedicated to designing elite LED props and high-grade fire performance gear since 2016.
+Merging engineering, electronics, and manual craft.",每一支客製棍、每一條 Technora 繩練，皆由主理人與匠人親自手工調試配重與平衡性。,Every staff and Technora leash is personally balanced and tested before leaving the workshop.,追蹤官方 IG / FB 粉專：隨時掌握工作坊開課動態、新品開箱與舞台光軌視覺展演。,"Follow our social channels for workshops, maintenance tutorials, and stage updates.",

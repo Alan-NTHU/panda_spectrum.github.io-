@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10140410</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10140430</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -549,6 +549,12 @@
                 justify-content: flex-start;
                 padding-bottom: 2px;
                 gap: 6px;
+                -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+                mask-image: linear-gradient(to right, black 85%, transparent 100%);
+                
+                /* 增加右側留白，避免最後一個按鈕被遮罩直接切平 */
+                padding-right: 28px !important;
+                scroll-behavior: smooth;
             }
             .nav-btn {
                 padding: 4px 10px;
@@ -556,7 +562,15 @@
                 flex-shrink: 0;
                 -webkit-tap-highlight-color: transparent;
             }
-            
+            nav.nav-bar.animate-hint {
+                animation: scroll-hint 0.85s cubic-bezier(0.25, 1, 0.5, 1) 0.5s;
+            }
+            @keyframes scroll-hint {
+                0% { transform: translateX(0); }
+                35% { transform: translateX(-28px); } /* 稍微往左滑出露出後方 */
+                70% { transform: translateX(4px); }   /* 彈回微震 */
+                100% { transform: translateX(0); }
+            }
             .container { flex-direction: column; padding: 12px; gap: 14px; }
             
             /* 📱 子項目清單手機版：整齊 2 欄網格排列，不冗長也不擠壓 */
@@ -780,6 +794,11 @@
                     renderCategory(cat);
                 });
             });
+            // 手機端進站時，觸發一次輕微左右微擺提示 (0.5 秒後執行)
+            const navBar = document.getElementById('top-nav');
+            if (navBar && window.innerWidth <= 768) {
+                navBar.classList.add('animate-hint');
+            }
         }
 
         function renderCategory(catKey) {

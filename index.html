@@ -400,9 +400,15 @@
             justify-content: space-between;
             align-items: center;
             font-size: 0.82rem;
-            background: rgba(255,255,255,0.03);
-            padding: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px 12px;
             border-radius: 6px;
+            border-left: 3px solid var(--item-color, #fff); /* 依分類注入的主題色 */
+            background-image: linear-gradient(90deg, var(--item-glow, transparent), transparent 40%);
+            transition: transform 0.2s ease;
+        }
+        .cart-row:hover {
+            background-color: rgba(255, 255, 255, 0.05);
         }
         .cart-footer { border-top: 1px solid var(--border-color); padding-top: 12px; }
         .copy-all-btn {
@@ -495,7 +501,7 @@
                     <img src="images/logo.png" alt="Logo" class="brand-logo" id="main-logo" 
                          onload="this.style.display='inline-block'" onerror="this.style.display='none'">
                     <div class="brand-text-block">
-                        <span class="brand-main">勁梅演光 version 1014.0220 </span>
+                        <span class="brand-main">勁梅演光 version 1014.0250 </span>
                         <span class="brand-sub">Panda'Spectrum, 2026</span>
                     </div>
                 </a>
@@ -882,36 +888,65 @@
             updateCartUI();
             toggleCartDrawer(true);
         }
+// 8 大分類對應的主題色表
+        const categoryThemeMap = {
+            led:       { color: '#a5f3fc', glow: 'rgba(165, 243, 252, 0.12)' }, // 青白
+            fire:      { color: '#ff3b30', glow: 'rgba(255, 59, 48, 0.15)' },   // 紅
+            portfolio: { color: '#ff9500', glow: 'rgba(255, 149, 0, 0.15)' },   // 橙
+            parts:     { color: '#ffd60a', glow: 'rgba(255, 214, 10, 0.12)' },  // 黃
+            agency:    { color: '#30d158', glow: 'rgba(48, 209, 88, 0.15)' },   // 綠
+            service:   { color: '#0a84ff', glow: 'rgba(10, 132, 255, 0.15)' },  // 藍
+            tutorial:  { color: '#bf5af2', glow: 'rgba(191, 90, 242, 0.15)' },  // 紫
+            about:     { color: '#e0c3fc', glow: 'rgba(224, 195, 252, 0.15)' }   // 紫白
+        };
 
         function updateCartUI() {
             let count = 0;
             let total = 0;
             const container = document.getElementById('cart-list-container');
             container.innerHTML = '';
-
+        
+            // 取得所有商品清單（相容原本物件形式或陣列扁平化）
             const allProducts = Object.values(database).flat();
-
-            Object.keys(cart).forEach(id => {
+        
+            const cartIds = Object.keys(cart);
+            if (cartIds.length === 0) {
+                container.innerHTML = `<p style="color:var(--text-sub); font-size:0.8rem; padding:8px 0;">目前無商品</p>`;
+            }
+        
+            cartIds.forEach(id => {
                 const qty = cart[id];
                 count += qty;
                 const prod = allProducts.find(p => p.id === id);
+        
                 if (prod) {
                     const subtotal = prod.price * qty;
                     total += subtotal;
-
+        
+                    // 取得該商品所屬大類的主題色，預設為亮白色
+                    const theme = categoryThemeMap[prod.category] || { color: '#a5f3fc', glow: 'transparent' };
+        
                     const row = document.createElement('div');
                     row.className = 'cart-row';
+                    // 動態傳入 CSS 變數
+                    row.style.setProperty('--item-color', theme.color);
+                    row.style.setProperty('--item-glow', theme.glow);
+        
                     row.innerHTML = `
                         <div>
-                            <div>${currentLang === 'zh' ? prod.name_zh : prod.name_en}</div>
-                            <div style="color:var(--text-sub); font-size:0.75rem;">$${prod.price} × ${qty}</div>
+                            <div style="font-weight: 500;">${currentLang === 'zh' ? prod.name_zh : prod.name_en}</div>
+                            <div style="color:var(--text-sub); font-size:0.75rem; margin-top:2px;">
+                                $${prod.price} × ${qty}
+                            </div>
                         </div>
-                        <div style="font-weight:bold; color:var(--theme-accent);">$${subtotal}</div>
+                        <div style="font-weight: bold; color: ${theme.color}; font-size: 0.95rem; text-shadow: 0 0 8px ${theme.glow};">
+                            $${subtotal}
+                        </div>
                     `;
                     container.appendChild(row);
                 }
             });
-
+        
             document.getElementById('cart-counter').innerText = count;
             document.getElementById('cart-drawer-total').innerText = `$${total}`;
         }

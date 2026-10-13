@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - Flow art 道具工作室</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室</title>
     <style>
         :root {
-                    --theme-glow: rgba(165, 243, 252, 0.14);
-                    --theme-accent: #a5f3fc;
-                    --bg-base: #0a0a0f;
-                    --card-bg: rgba(22, 22, 30, 0.75);
-                    --border-color: rgba(255, 255, 255, 0.08);
-                    --text-main: #f0f0f5;
-                    --text-sub: #8e8e9f;
-                }
-        
-                /* 8 大主題色定義 */
-                body[data-theme="led"]       { --theme-glow: rgba(165, 243, 252, 0.14); --theme-accent: #a5f3fc; } /* 青白 */
-                body[data-theme="fire"]      { --theme-glow: rgba(255, 59, 48, 0.16);   --theme-accent: #ff3b30; } /* 紅 */
-                body[data-theme="portfolio"] { --theme-glow: rgba(255, 149, 0, 0.15);   --theme-accent: #ff9500; } /* 橙 */
-                body[data-theme="parts"]     { --theme-glow: rgba(255, 214, 10, 0.14);  --theme-accent: #ffd60a; } /* 黃 */
-                body[data-theme="agency"]    { --theme-glow: rgba(48, 209, 88, 0.15);   --theme-accent: #30d158; } /* 綠 */
-                body[data-theme="service"]   { --theme-glow: rgba(10, 132, 255, 0.15);  --theme-accent: #0a84ff; } /* 藍 */
-                body[data-theme="tutorial"]  { --theme-glow: rgba(191, 90, 242, 0.16);  --theme-accent: #bf5af2; } /* 紫 */
-                body[data-theme="about"]     { --theme-glow: rgba(224, 195, 252, 0.18); --theme-accent: #e0c3fc; } /* 紫白 */
+            --theme-glow: rgba(165, 243, 252, 0.14);
+            --theme-accent: #a5f3fc;
+            --bg-base: #0a0a0f;
+            --card-bg: rgba(22, 22, 30, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-main: #f0f0f5;
+            --text-sub: #8e8e9f;
+        }
+
+        /* 8 大主題色定義 */
+        body[data-theme="led"]       { --theme-glow: rgba(165, 243, 252, 0.14); --theme-accent: #a5f3fc; } /* 青白 */
+        body[data-theme="fire"]      { --theme-glow: rgba(255, 59, 48, 0.16);   --theme-accent: #ff3b30; } /* 紅 */
+        body[data-theme="portfolio"] { --theme-glow: rgba(255, 149, 0, 0.15);   --theme-accent: #ff9500; } /* 橙 */
+        body[data-theme="parts"]     { --theme-glow: rgba(255, 214, 10, 0.14);  --theme-accent: #ffd60a; } /* 黃 */
+        body[data-theme="agency"]    { --theme-glow: rgba(48, 209, 88, 0.15);   --theme-accent: #30d158; } /* 綠 */
+        body[data-theme="service"]   { --theme-glow: rgba(10, 132, 255, 0.15);  --theme-accent: #0a84ff; } /* 藍 */
+        body[data-theme="tutorial"]  { --theme-glow: rgba(191, 90, 242, 0.16);  --theme-accent: #bf5af2; } /* 紫 */
+        body[data-theme="about"]     { --theme-glow: rgba(224, 195, 252, 0.18); --theme-accent: #e0c3fc; } /* 紫白 */
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -57,7 +57,6 @@
             gap: 16px;
         }
         
-        /* 品牌區：桌機單行、手機自然堆疊 */
         .brand {
             display: flex;
             align-items: center;
@@ -88,7 +87,7 @@
             letter-spacing: 0.3px;
         }
 
-        /* 導覽列：5大類別標籤 */
+        /* 8大類別標籤 (橫向滑動支援) */
         nav.nav-bar {
             display: flex;
             gap: 6px;
@@ -117,7 +116,6 @@
             box-shadow: 0 0 12px var(--theme-accent);
         }
 
-        /* 頂部右側動作區（音樂、語言、購物車） */
         .header-actions {
             display: flex;
             align-items: center;
@@ -141,19 +139,17 @@
         }
         .btn-icon-compact:hover { border-color: var(--theme-accent); }
         
-        /* 音樂按鈕狀態 */
         .music-btn.playing {
             color: var(--theme-accent);
             border-color: var(--theme-accent);
             animation: pulse-border 2s infinite;
         }
         @keyframes pulse-border {
-            0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.4); }
-            70% { box-shadow: 0 0 0 6px rgba(0, 240, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(165, 243, 252, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(165, 243, 252, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(165, 243, 252, 0); }
         }
 
-        /* 主容器佈局 */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -164,7 +160,6 @@
             width: 100%;
         }
 
-        /* 側邊欄 */
         aside.sidebar {
             width: 240px;
             flex-shrink: 0;
@@ -199,7 +194,6 @@
             box-shadow: inset 3px 0 0 var(--theme-accent);
         }
 
-        /* 主展示區 */
         main.main-content {
             flex: 1;
             display: flex;
@@ -208,7 +202,6 @@
             min-width: 0;
         }
 
-        /* 輪播區塊 */
         .carousel-wrapper {
             position: relative;
             background: var(--card-bg);
@@ -234,17 +227,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #0d0d14;
+            background: #0b0b12;
         }
         .carousel-slide img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* 改為 contain：等比例完整顯示，不裁切 */
+            object-fit: contain; /* 等比例完整顯示不被切裁 */
             user-select: none;
             -webkit-user-drag: none;
-            background-color: #0b0b12; /* 留白處的質感底色 */
+            background-color: #0b0b12;
         }
-        /* Hero 卡片（第 1 張） */
+
         .hero-card {
             padding: 22px;
             display: flex;
@@ -254,6 +247,7 @@
             border-left: 3px solid var(--theme-accent);
             width: 100%;
             height: 100%;
+            overflow-y: auto;
         }
         .hero-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
         .hero-tag {
@@ -264,7 +258,15 @@
             color: var(--theme-accent);
         }
         .hero-title { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
-        .hero-desc { font-size: 0.88rem; color: var(--text-sub); line-height: 1.55; margin-bottom: 12px; }
+        
+        /* 核心描述：支援 \n 自動換行 */
+        .hero-desc { 
+            font-size: 0.88rem; 
+            color: var(--text-sub); 
+            line-height: 1.6; 
+            margin-bottom: 12px;
+            white-space: pre-line; 
+        }
         .manual-link-btn {
             display: inline-flex;
             align-items: center;
@@ -292,7 +294,6 @@
             pointer-events: none;
         }
 
-        /* 矮小選購列 */
         .compact-action-bar {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -315,7 +316,6 @@
             font-size: 0.85rem;
         }
 
-        /* 多欄文字展開區 */
         .deep-dive-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -333,9 +333,15 @@
             color: #fff;
             margin-bottom: 6px;
         }
-        .dive-text { font-size: 0.82rem; color: var(--text-sub); line-height: 1.55; }
+        
+        /* 深度文字：支援 \n 自動換行 */
+        .dive-text { 
+            font-size: 0.82rem; 
+            color: var(--text-sub); 
+            line-height: 1.6; 
+            white-space: pre-line; 
+        }
 
-        /* 購物清單滑出抽屜 */
         .cart-drawer {
             position: fixed;
             top: 0; right: -360px;
@@ -382,12 +388,10 @@
             font-size: 0.88rem;
         }
 
-        /* ========================================================
-           📱 關鍵優化：手機版頂端雙列結構與極度不壅塞設計 (<= 768px)
-        ======================================================== */
+        /* 手機版優化 */
         @media (max-width: 768px) {
             .header-inner {
-                flex-direction: column; /* 轉為垂直兩列 */
+                flex-direction: column;
                 align-items: stretch;
                 padding: 8px 12px 6px;
                 gap: 8px;
@@ -398,11 +402,9 @@
                 align-items: center;
                 width: 100%;
             }
-            /* 標題在手機雙行呈現 */
             .brand-main { font-size: 1rem; }
             .brand-sub { font-size: 0.62rem; }
             
-            /* 分類標籤獨佔第二列，橫向全寬滑動 */
             nav.nav-bar {
                 width: 100%;
                 justify-content: flex-start;
@@ -415,7 +417,6 @@
                 flex-shrink: 0;
             }
 
-            /* 主容器與多欄調整 */
             .container { flex-direction: column; padding: 12px; gap: 14px; }
             aside.sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding-bottom: 4px; }
             .item-btn { white-space: nowrap; flex: 0 0 auto; font-size: 0.8rem; padding: 7px 10px; }
@@ -426,16 +427,12 @@
 </head>
 <body data-theme="led">
 
-    <!-- 頂部導覽列 -->
     <header>
         <div class="header-inner">
-            <!-- 手機版第 1 列：品牌 (左) + 迷你按鈕組 (右) -->
             <div class="header-row-top">
                 <a href="#" class="brand">
-                    <!-- 改成這樣：增加 onload 事件，載入成功就自動顯現 -->
                     <img src="images/logo.png" alt="Logo" class="brand-logo" id="main-logo" 
-                         onload="this.style.display='inline-block'" 
-                         onerror="this.style.display='none'">
+                         onload="this.style.display='inline-block'" onerror="this.style.display='none'">
                     <div class="brand-text-block">
                         <span class="brand-main">勁梅演光</span>
                         <span class="brand-sub">Panda'Spectrum</span>
@@ -443,22 +440,19 @@
                 </a>
 
                 <div class="header-actions">
-                    <!-- 背景音樂開關 (預設靜音，點選播放) -->
                     <button class="btn-icon-compact music-btn" id="music-btn" onclick="toggleAudio()" title="播放/暫停背景氛圍音樂">
                         🎵 <span id="music-status">BGM</span>
                     </button>
-                    <!-- 純文字語系切換 (無地球標籤) -->
                     <button class="btn-icon-compact" id="lang-btn" onclick="toggleLanguage()">
                         <span id="lang-text">TW</span>
                     </button>
-                    <!-- 緊湊購物車 -->
                     <button class="btn-icon-compact" onclick="toggleCartDrawer()">
                         🛒 <span id="cart-counter">0</span>
                     </button>
                 </div>
             </div>
 
-            <!-- 手機版第 2 列：5 大核心標籤獨立平滑橫滑 -->
+            <!-- 8 大精準分類 -->
             <nav class="nav-bar" id="top-nav">
                 <button class="nav-btn active" data-cat="led" data-theme="led">演光</button>
                 <button class="nav-btn" data-cat="fire" data-theme="fire">火舞</button>
@@ -472,51 +466,43 @@
         </div>
     </header>
 
-    <!-- 背景音樂 Audio 元素 (可將路徑換成您的 mp3 檔案) -->
     <audio id="bgm-player" loop preload="none">
         <source src="audio/bgm.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- 主頁面架構 -->
     <div class="container">
-        <!-- 側邊欄：子項目選單 -->
         <aside class="sidebar">
             <div class="sidebar-title" id="sidebar-label">項目</div>
             <div id="sidebar-items" style="display: flex; flex-direction: column; gap: 6px; width: 100%;"></div>
         </aside>
 
-        <!-- 主要展示區 -->
         <main class="main-content">
-            <!-- 輪播元件 -->
             <div class="carousel-wrapper">
                 <div class="carousel-track" id="carousel-track"></div>
                 <div class="carousel-indicator" id="carousel-num">1 / 1</div>
             </div>
 
-            <!-- 選購列 (矮小緊湊版：知識庫與關於我會自動隱藏) -->
             <div class="compact-action-bar" id="purchase-bar">
                 <div>
-                    <span style="font-size:0.75rem; color:var(--text-sub);">規格單價：</span>
+                    <span style="font-size:0.75rem; color:var(--text-sub);">單價：</span>
                     <span class="price-badge" id="product-price">$0</span>
                 </div>
-                <button class="btn-add-cart" id="btn-add-cart" onclick="addToCartCurrent()">+ 加入選購清單</button>
+                <button class="btn-add-cart" id="btn-add-cart" onclick="addToCartCurrent()">+ 加入詢問清單</button>
             </div>
 
-            <!-- 詳細文字多欄展示 (Deep Dive) -->
             <div class="deep-dive-grid" id="deep-dive-container">
                 <div class="dive-card">
-                    <div class="dive-title">⚙️ <span id="dive-title-1">功能說明</span></div>
+                    <div class="dive-title">⚙️ <span id="dive-title-1">規格特性</span></div>
                     <div class="dive-text" id="dive-text-1">正在載入詳細內容...</div>
                 </div>
                 <div class="dive-card">
-                    <div class="dive-title">💡 <span id="dive-title-2">尺寸規格</span></div>
+                    <div class="dive-title">💡 <span id="dive-title-2">技術功能</span></div>
                     <div class="dive-text" id="dive-text-2">正在載入詳細內容...</div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- 購物清單抽屜 -->
     <div class="cart-drawer" id="cart-drawer">
         <div class="cart-header">
             <h3 style="font-size:1rem;">🛒 詢問清單</h3>
@@ -530,13 +516,14 @@
                 <span>預估合計：</span>
                 <span id="cart-drawer-total" style="color:var(--theme-accent); font-weight:bold;">$0</span>
             </div>
-            <button class="copy-all-btn" onclick="copyCartText()">📋 複製清單</button>
+            <button class="copy-all-btn" onclick="copyCartText()">📋 複製清單)</button>
         </div>
     </div>
 
     <script>
         let currentLang = 'zh';
 
+        // 8 大分類資料庫結構示範 (包含 \n 斷行範例)
         const database = {
             led: [
                 {
@@ -700,7 +687,6 @@
             ]
         };
 
-
         let currentCat = 'led';
         let currentItem = database.led[0];
         let cart = {};
@@ -738,8 +724,10 @@
             const sidebarContainer = document.getElementById('sidebar-items');
             sidebarContainer.innerHTML = '';
 
+            // 作品、服務、教學、勁梅 類別自動隱藏選購欄
             const purchaseBar = document.getElementById('purchase-bar');
-            if (catKey === 'knowledge' || catKey === 'about') {
+            const noBuyCats = ['portfolio', 'service', 'tutorial', 'about'];
+            if (noBuyCats.includes(catKey)) {
                 purchaseBar.style.display = 'none';
             } else {
                 purchaseBar.style.display = 'flex';
@@ -764,7 +752,7 @@
 
         async function loadItemDetails(item) {
             currentItem = item;
-            document.getElementById('product-price').innerText = item.price > 0 ? `$${item.price}` : '客製諮詢';
+            document.getElementById('product-price').innerText = item.price > 0 ? `$${item.price}` : '客製討論';
             document.getElementById('dive-text-1').innerText = currentLang === 'zh' ? item.dive1_zh : item.dive1_en;
             document.getElementById('dive-text-2').innerText = currentLang === 'zh' ? item.dive2_zh : item.dive2_en;
 
@@ -775,7 +763,7 @@
             const title = currentLang === 'zh' ? item.name_zh : item.name_en;
             const desc = currentLang === 'zh' ? item.desc_zh : item.desc_en;
 
-            const manualBtnHtml = item.manualUrl 
+            const manualBtnHtml = (item.manualUrl && item.manualUrl.trim() !== "")
                 ? `<a href="${item.manualUrl}" target="_blank" class="manual-link-btn">📖 ${currentLang === 'zh' ? '詳細介紹' : 'Documentation'} ↗</a>` 
                 : '';
 
@@ -810,29 +798,15 @@
             track.scrollLeft = 0;
             document.getElementById('carousel-num').innerText = `1 / ${track.children.length}`;
         }
-        
+
         async function probeSequenceImages(prefix, max = 10) {
             const results = [];
-            const extensions = ['.jpg', '.png']; // 支援兩種副檔名
-        
             for (let i = 1; i <= max; i++) {
                 const num = String(i).padStart(2, '0');
-                let foundUrl = null;
-        
-                for (const ext of extensions) {
-                    const url = `${prefix}${num}${ext}`;
-                    const exists = await checkImageExists(url);
-                    if (exists) {
-                        foundUrl = url;
-                        break;
-                    }
-                }
-        
-                if (foundUrl) {
-                    results.push(foundUrl);
-                } else {
-                    break; // 該序號兩種格式都沒有，中斷探測
-                }
+                const url = `${prefix}${num}.jpg`;
+                const exists = await checkImageExists(url);
+                if (exists) results.push(url);
+                else break;
             }
             return results;
         }
@@ -849,9 +823,9 @@
         function createSvgFallback(title) {
             const encoded = encodeURIComponent(`
                 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
-                    <rect width="800" height="450" fill="#13131c"/>
-                    <circle cx="400" cy="225" r="80" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
-                    <text x="400" y="230" fill="rgba(255,255,255,0.4)" font-size="16" font-family="sans-serif" text-anchor="middle">
+                    <rect width="800" height="450" fill="#0b0b12"/>
+                    <circle cx="400" cy="225" r="70" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
+                    <text x="400" y="230" fill="rgba(255,255,255,0.3)" font-size="15" font-family="sans-serif" text-anchor="middle">
                         [ 圖片庫: ${title} ]
                     </text>
                 </svg>
@@ -859,12 +833,11 @@
             return `data:image/svg+xml;utf8,${encoded}`;
         }
 
-        /* 語系切換：僅顯示 ZH 或 EN，且原地更新文字不重置圖片位置 */
+        /* 語系切換：就地更新，不彈回首張圖片 */
         function toggleLanguage() {
             currentLang = currentLang === 'zh' ? 'en' : 'zh';
             document.getElementById('lang-text').innerText = currentLang === 'zh' ? 'TW' : 'EN';
-        
-            // 1. 更新側邊欄按鈕文字
+
             const items = database[currentCat] || [];
             const sidebarBtns = document.querySelectorAll('#sidebar-items .item-btn');
             items.forEach((item, index) => {
@@ -872,42 +845,37 @@
                     sidebarBtns[index].innerText = currentLang === 'zh' ? item.name_zh : item.name_en;
                 }
             });
-        
-            // 2. 原地更新當前商品的文字資訊（不重置圖片輪播軌道！）
+
             if (currentItem) {
-                // 更新多欄文字 (Deep Dive)
                 document.getElementById('dive-text-1').innerText = currentLang === 'zh' ? currentItem.dive1_zh : currentItem.dive1_en;
                 document.getElementById('dive-text-2').innerText = currentLang === 'zh' ? currentItem.dive2_zh : currentItem.dive2_en;
-        
-                // 更新輪播第 1 張文字卡的內容
+
                 const heroCard = document.querySelector('.carousel-slide .hero-card');
                 if (heroCard) {
                     const tags = currentLang === 'zh' ? currentItem.tags_zh : currentItem.tags_en;
                     const title = currentLang === 'zh' ? currentItem.name_zh : currentItem.name_en;
                     const desc = currentLang === 'zh' ? currentItem.desc_zh : currentItem.desc_en;
-        
+
                     const tagsContainer = heroCard.querySelector('.hero-tags');
                     if (tagsContainer) {
                         tagsContainer.innerHTML = tags.map(t => `<span class="hero-tag">${t}</span>`).join('');
                     }
                     const titleEl = heroCard.querySelector('.hero-title');
                     if (titleEl) titleEl.innerText = title;
-        
+
                     const descEl = heroCard.querySelector('.hero-desc');
                     if (descEl) descEl.innerText = desc;
-        
+
                     const manualBtn = heroCard.querySelector('.manual-link-btn');
                     if (manualBtn) {
-                        manualBtn.innerHTML = `📖 ${currentLang === 'zh' ? '說明書 / 規格' : 'Documentation'} ↗`;
+                        manualBtn.innerHTML = `📖 ${currentLang === 'zh' ? '詳細介紹' : 'Documentation'} ↗`;
                     }
                 }
             }
-        
-            // 3. 同步更新購物車抽屜內品名的語系顯示
+
             updateCartUI();
         }
-            
-        /* 音樂播放 / 暫停控制 */
+
         function toggleAudio() {
             const audio = document.getElementById('bgm-player');
             const btn = document.getElementById('music-btn');
@@ -918,8 +886,8 @@
                     btn.classList.add('playing');
                     status.innerText = 'ON';
                 }).catch(err => {
-                    console.warn("音訊播放被瀏覽器阻擋，或找不到 audio/bgm.mp3 檔案：", err);
-                    alert("請確認專案資料夾內已放置 audio/bgm.mp3 音訊檔案！");
+                    console.warn("找不到音訊檔案或被阻擋：", err);
+                    alert("請確認專案資料夾內已放置 audio/bgm.mp3 檔案！");
                 });
             } else {
                 audio.pause();
@@ -928,7 +896,6 @@
             }
         }
 
-        /* 購物車功能 */
         function addToCartCurrent() {
             if (!currentItem || currentItem.price === 0) return;
             cart[currentItem.id] = (cart[currentItem.id] || 0) + 1;
@@ -983,7 +950,7 @@
                 return;
             }
 
-            let text = `👋 您好！我想向【勁梅演光】諮詢並訂購以下品項：\n`;
+            let text = `👋 您好！我想向【勁梅演光】諮詢以下品項：\n`;
             text += `=========================\n`;
             let total = 0;
             keys.forEach(id => {
@@ -998,7 +965,7 @@
             text += `（備註：長度規格 / 特殊訂製需求請在此填寫）`;
 
             navigator.clipboard.writeText(text).then(() => {
-                alert('清單已成功複製！請直接前往 FB / IG 私訊貼上對話即可 👌');
+                alert('清單已成功複製！請直接前往 FB / IG 私訊貼上進行討論 👌');
             });
         }
     </script>

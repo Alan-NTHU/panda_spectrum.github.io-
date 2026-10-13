@@ -436,8 +436,8 @@
                     <img src="images/logo.png" alt="Logo" class="brand-logo" id="main-logo" 
                          onload="this.style.display='inline-block'" onerror="this.style.display='none'">
                     <div class="brand-text-block">
-                        <span class="brand-main">勁梅演光 version 1014.0100 </span>
-                        <span class="brand-sub">Panda'Spectrum</span>
+                        <span class="brand-main">勁梅演光 version 1014.0150 </span>
+                        <span class="brand-sub">Panda'Spectrum, 2026</span>
                     </div>
                 </a>
 
@@ -469,7 +469,7 @@
     </header>
 
     <audio id="bgm-player" loop preload="none">
-        <source src="audio/bgm.mp3" type="audio/mpeg">
+        // <source src="bgm.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
@@ -616,7 +616,8 @@
 
             // 作品、服務、教學、勁梅 類別自動隱藏選購欄
             const purchaseBar = document.getElementById('purchase-bar');
-            const noBuyCats = ['portfolio', 'service', 'tutorial', 'about'];
+            //            const noBuyCats = ['portfolio', 'service', 'tutorial', 'about'];
+            const noBuyCats = ['service','agency', 'about'];
             if (noBuyCats.includes(catKey)) {
                 purchaseBar.style.display = 'none';
             } else {
@@ -765,26 +766,53 @@
 
             updateCartUI();
         }
-
+        let lastBgmIndex = -1;
+        
         function toggleAudio() {
             const audio = document.getElementById('bgm-player');
             const btn = document.getElementById('music-btn');
             const status = document.getElementById('music-status');
-
+        
             if (audio.paused) {
+                // 如果目前沒有正在播的歌曲（或剛打開），隨機選一首 01 ~ 05
+                if (!audio.src || audio.ended) {
+                    let randomIndex;
+                    do {
+                        // 隨機產生 1 到 5 的數字
+                        randomIndex = Math.floor(Math.random() * 5) + 1;
+                    } while (randomIndex === lastBgmIndex); // 避免連續重複
+                    
+                    lastBgmIndex = randomIndex;
+                    const numStr = String(randomIndex).padStart(2, '0'); // 轉為 "01", "02"...
+                    audio.src = `audio/bgm${numStr}.mp3`;
+                }
+        
                 audio.play().then(() => {
                     btn.classList.add('playing');
                     status.innerText = 'ON';
                 }).catch(err => {
-                    console.warn("找不到音訊檔案或被阻擋：", err);
-                    alert("請確認專案資料夾內已放置 audio/bgm.mp3 檔案！");
+                    console.warn("音訊播放被阻擋或找不到檔案：", err);
+                    alert(`找不到對應的音訊檔案（${audio.src}），請確認 audio/ 資料夾內有放入 bgm01~05.mp3！`);
                 });
             } else {
+                // 暫停播放
                 audio.pause();
                 btn.classList.remove('playing');
                 status.innerText = 'BGM';
             }
         }
+        
+        // （加分體驗）當一首歌播完時，自動隨機換下一首繼續播：
+        document.addEventListener('DOMContentLoaded', () => {
+            const audio = document.getElementById('bgm-player');
+            if (audio) {
+                audio.addEventListener('ended', () => {
+                    // 清空 src，讓下次觸發時重新隨機抽一首
+                    audio.src = '';
+                    toggleAudio();
+                });
+            }
+        });
 
         function addToCartCurrent() {
             if (!currentItem || currentItem.price === 0) return;

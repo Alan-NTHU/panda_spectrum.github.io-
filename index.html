@@ -577,7 +577,7 @@
                     <img src="images/logo.png" alt="Logo" class="brand-logo" id="main-logo" 
                          onload="this.style.display='inline-block'" onerror="this.style.display='none'">
                     <div class="brand-text-block">
-                        <span class="brand-main">勁梅演光 version 1014.0340</span>
+                        <span class="brand-main">勁梅演光 version 1014.0345</span>
                         <span class="brand-sub">Panda'Spectrum, 2026</span>
                     </div>
                 </a>
@@ -609,7 +609,7 @@
         </div>
     </header>
 
-    <audio id="bgm-player" loop preload="none"></audio>
+    <audio id="bgm-player" preload="none"></audio>
 
     <div class="container">
         <aside class="sidebar">
@@ -905,23 +905,29 @@
         }
 
         let lastBgmIndex = -1;
+        
+        // 隨機選曲核心函式 (01 ~ 05，保證不與上一首重複)
+        function pickRandomBgm() {
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * 5) + 1;
+            } while (randomIndex === lastBgmIndex);
+        
+            lastBgmIndex = randomIndex;
+            const numStr = String(randomIndex).padStart(2, '0');
+            return `audio/bgm${numStr}.mp3`;
+        }
+        
         function toggleAudio() {
             const audio = document.getElementById('bgm-player');
             const btn = document.getElementById('music-btn');
             const status = document.getElementById('music-status');
-
+        
             if (audio.paused) {
-                if (!audio.src || audio.ended) {
-                    let randomIndex;
-                    do {
-                        randomIndex = Math.floor(Math.random() * 5) + 1;
-                    } while (randomIndex === lastBgmIndex);
-                    
-                    lastBgmIndex = randomIndex;
-                    const numStr = String(randomIndex).padStart(2, '0');
-                    audio.src = `audio/bgm${numStr}.mp3`;
-                }
-
+                // 每次重新開啟播放，都隨機挑選一首新曲目
+                audio.src = pickRandomBgm();
+                audio.currentTime = 0; // 從頭播放
+        
                 audio.play().then(() => {
                     btn.classList.add('playing');
                     status.innerText = 'ON';
@@ -930,18 +936,24 @@
                     alert(`找不到音訊檔案（${audio.src}），請確認 audio/ 資料夾內有放入 bgm01~05.mp3！`);
                 });
             } else {
+                // 暫停播放
                 audio.pause();
                 btn.classList.remove('playing');
                 status.innerText = 'BGM';
             }
         }
-
+        
+        // 當一首自然播完時：自動隨機抽下一首無縫接力播放
         document.addEventListener('DOMContentLoaded', () => {
             const audio = document.getElementById('bgm-player');
             if (audio) {
                 audio.addEventListener('ended', () => {
-                    audio.src = '';
-                    toggleAudio();
+                    const btn = document.getElementById('music-btn');
+                    audio.src = pickRandomBgm();
+                    audio.play().then(() => {
+                        btn.classList.add('playing');
+                        document.getElementById('music-status').innerText = 'ON';
+                    }).catch(err => console.warn("自動換曲播放受阻：", err));
                 });
             }
         });

@@ -9,4 +9,7 @@
 架構則大部分透過gemini 完成
 
 IG: https://www.instagram.com/pandaspectrum/
-FB: fb.me/pandaspectrum
+FB: fb.me/pandaspectrum/
+
+
+

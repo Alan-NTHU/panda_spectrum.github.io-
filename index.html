@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室</title>
-    <!-- 改為指向自己的檔案，從此 100% 獨立，不受任何外部服務影響 -->
+    <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
         :root {
@@ -28,7 +28,7 @@
         body[data-theme="about"]     { --theme-glow: rgba(224, 195, 252, 0.18); --theme-accent: #e0c3fc; } /* 紫白 */
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-/* 移除 body 原本的 radial-gradient，保持乾淨純黑底色 */
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-base);
@@ -37,30 +37,24 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            position: relative; /* 讓光暈層作為背景定位 */
+            position: relative;
         }
-        
-        /* 核心優化：獨立的限定大小光暈球體，杜絕直線邊界 */
+
+        /* 核心優化：固定視窗頂端的光暈球體，完全無直線接縫 */
         .ambient-glow {
-            position: absolute;
-            top: -120px;
+            position: fixed;
+            top: -160px;
             left: 50%;
             transform: translateX(-50%);
-            width: 600px;             /* 限制光暈寬度，不無限擴散 */
-            height: 380px;            /* 限制光暈高度 */
-            background: var(--theme-accent);
-            opacity: 0.12;            /* 保持微光質感，不搶文字 */
-            border-radius: 50%;       /* 保持正圓/橢圓 */
-            filter: blur(80px);       /* 超高階柔化，邊界 100% 自然消散 */
-            pointer-events: none;     /* 滑鼠穿透，不干擾點擊 */
-            z-index: 0;               /* 置於內容最底層 */
+            width: 650px;
+            height: 380px;
+            background: radial-gradient(ellipse at center, var(--theme-accent) 0%, transparent 72%);
+            opacity: 0.16;
+            filter: blur(70px);
+            pointer-events: none;
+            z-index: 0;
             transition: background 0.6s ease, opacity 0.6s ease;
         }
-        
-        <body data-theme="led">
-        
-            <!-- 柔和環境光斑（完全杜絕直線裁切硬邊） -->
-            <div class="ambient-glow"></div>
 
         /* 頂部導覽列 */
         header {
@@ -71,10 +65,7 @@
             backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-color);
         }
-                /* 確保 header 與內容層在光暈上方 */
-       
-        /* 手機版適度縮小光球，避免手機螢幕過亮 */
-        
+
         .header-inner {
             max-width: 1200px;
             margin: 0 auto;
@@ -84,7 +75,7 @@
             justify-content: space-between;
             gap: 16px;
         }
-        
+
         .brand {
             display: flex;
             align-items: center;
@@ -115,7 +106,7 @@
             letter-spacing: 0.3px;
         }
 
-        /* 8大類別標籤 (橫向滑動支援) */
+        /* 8大類別標籤 */
         nav.nav-bar {
             display: flex;
             gap: 6px;
@@ -166,7 +157,7 @@
             height: 30px;
         }
         .btn-icon-compact:hover { border-color: var(--theme-accent); }
-        
+
         .music-btn.playing {
             color: var(--theme-accent);
             border-color: var(--theme-accent);
@@ -189,7 +180,8 @@
             position: relative;
             z-index: 1;
         }
-        
+
+        /* 側邊欄結構 */
         aside.sidebar {
             width: 240px;
             flex-shrink: 0;
@@ -204,6 +196,12 @@
             color: var(--text-sub);
             padding: 0 6px 6px;
             border-bottom: 1px solid var(--border-color);
+        }
+        .sidebar-items {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
         }
         .item-btn {
             background: var(--card-bg);
@@ -262,7 +260,7 @@
         .carousel-slide img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* 等比例完整顯示不被切裁 */
+            object-fit: contain;
             user-select: none;
             -webkit-user-drag: none;
             background-color: #0b0b12;
@@ -289,7 +287,6 @@
         }
         .hero-title { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
         
-        /* 核心描述：支援 \n 自動換行 */
         .hero-desc { 
             font-size: 0.88rem; 
             color: var(--text-sub); 
@@ -363,783 +360,8 @@
             color: #fff;
             margin-bottom: 6px;
         }
-        
-        /* 深度文字：支援 \n 自動換行 */
         .dive-text { 
             font-size: 0.82rem; 
             color: var(--text-sub); 
             line-height: 1.6; 
-            white-space: pre-line; 
-        }
-
-        .cart-drawer {
-            position: fixed;
-            top: 0; right: -360px;
-            width: 320px; height: 100vh;
-            background: #111118;
-            border-left: 1px solid var(--border-color);
-            z-index: 200;
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            transition: right 0.3s ease;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-        }
-        .cart-drawer.open { right: 0; }
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-            margin-bottom: 14px;
-        }
-        .cart-items { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .cart-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.82rem;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 8px 12px;
-            border-radius: 6px;
-            border-left: 3px solid var(--item-color, #fff); /* 依分類注入的主題色 */
-            background-image: linear-gradient(90deg, var(--item-glow, transparent), transparent 40%);
-            transition: transform 0.2s ease;
-        }
-        .cart-row:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-        .cart-footer { border-top: 1px solid var(--border-color); padding-top: 12px; }
-        .copy-all-btn {
-            background: #28a745;
-            color: #fff;
-            border: none;
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 8px;
-            font-size: 0.88rem;
-        }
-
-        /* 手機版優化 */
-            @media (max-width: 768px) {
-                
-                .header-inner {
-                    flex-direction: column;
-                    align-items: stretch;
-                    padding: 8px 12px 6px;
-                    gap: 8px;
-                }
-                .header-row-top {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    width: 100%;
-                }
-                .brand-main { font-size: 1rem; }
-                .brand-sub { font-size: 0.62rem; }
-                
-                nav.nav-bar {
-                    width: 100%;
-                    justify-content: flex-start;
-                    padding-bottom: 2px;
-                    gap: 6px;
-                }
-                .nav-btn {
-                    padding: 4px 10px;
-                    font-size: 0.78rem;
-                    flex-shrink: 0;
-                }
-                .ambient-glow {
-                    width: 340px;
-                    height: 220px;
-                    top: -60px;
-                    filter: blur(55px);
-                    opacity: 0.15;
-                }
-                .container { flex-direction: column; padding: 12px; gap: 14px; }
-                aside.sidebar {
-                    width: 100%;
-                    display: flex;
-                    flex-direction: row;
-                    overflow-x: auto;
-                    scroll-snap-type: x proximity;
-                    gap: 6px;
-                    padding-bottom: 6px;
-                    /* 隱藏原生粗糙滾動條，保持滑順 */
-                    scrollbar-width: none;
-                    -webkit-overflow-scrolling: touch;
-                }
-                .item-btn {
-                    flex: 0 0 auto;
-                    padding: 6px 12px;
-                    font-size: 0.8rem;
-                    border-radius: 16px; /* 膠囊狀更省空間且好點按 */
-                    scroll-snap-align: start;
-                }
-                .deep-dive-grid { grid-template-columns: 1fr; }
-                .carousel-wrapper { aspect-ratio: 4 / 3; }
-            }
-            .cart-backdrop {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                background: rgba(0, 0, 0, 0.45); /* 輕微暗化背景，突顯抽屜 */
-                backdrop-filter: blur(3px);      /* 輕微模糊背景質感 */
-                z-index: 150;                     /* 高於內容，但低於抽屜 */
-                opacity: 0;
-                pointer-events: none;            /* 平常不擋住點擊 */
-                transition: opacity 0.3s ease;
-            }    
-        
-        /* 抽屜打開時，啟動遮罩 */
-        .cart-backdrop.open {
-            opacity: 1;
-            pointer-events: auto;            /* 啟用點擊，點擊即可關閉 */
-        }
-        
-        /* 確保購物車抽屜在遮罩之上 */
-        .cart-drawer {
-            z-index: 200;
-            /* 其餘樣式保持不變 */
-        }
-        /* 頁尾精緻微光排版 */
-        footer.site-footer {
-            margin-top: auto;
-            border-top: 1px solid var(--border-color);
-            background: rgba(8, 8, 12, 0.95);
-            padding: 32px 16px 24px;
-            position: relative;
-            z-index: 10;
-        }
-        .footer-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 14px;
-        }
-        .footer-brand {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .footer-title {
-            font-size: 0.95rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #fff;
-        }
-        .footer-slogan {
-            font-size: 0.75rem;
-            color: var(--text-sub);
-            font-style: italic;
-        }
-        .footer-disclaimer {
-            max-width: 640px;
-            font-size: 0.72rem;
-            color: rgba(255, 255, 255, 0.4);
-            line-height: 1.6;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .footer-meta {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.75rem;
-            color: var(--text-sub);
-            margin-top: 6px;
-        }
-        .footer-links {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .footer-links a {
-            color: var(--text-sub);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .footer-links a:hover {
-            color: var(--theme-accent);
-        }
-        
-        /* 手機版微調 */
-        @media (max-width: 768px) {
-            footer.site-footer {
-                padding: 24px 12px 20px;
-            }
-            .footer-disclaimer {
-                font-size: 0.68rem;
-            }
-            .footer-meta {
-                flex-direction: column;
-                gap: 6px;
-            }
-        }
-    </style>
-</head>
-<body data-theme="led">
-
-    <header>
-        <div class="header-inner">
-            <div class="header-row-top">
-                <a href="#" class="brand">
-                    <img src="images/logo.png" alt="Logo" class="brand-logo" id="main-logo" 
-                         onload="this.style.display='inline-block'" onerror="this.style.display='none'">
-                    <div class="brand-text-block">
-                        <span class="brand-main">勁梅演光 version 1014.0320 </span>
-                        <span class="brand-sub">Panda'Spectrum, 2026</span>
-                    </div>
-                </a>
-
-                <div class="header-actions">
-                    <button class="btn-icon-compact music-btn" id="music-btn" onclick="toggleAudio()" title="播放/暫停背景氛圍音樂">
-                        🎵 <span id="music-status">BGM</span>
-                    </button>
-                    <button class="btn-icon-compact" id="lang-btn" onclick="toggleLanguage()">
-                        <span id="lang-text">TW</span>
-                    </button>
-                    <button class="btn-icon-compact" onclick="toggleCartDrawer()">
-                        🛒 <span id="cart-counter">0</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- 8 大精準分類 -->
-            <nav class="nav-bar" id="top-nav">
-                <button class="nav-btn active" data-cat="led" data-theme="led">演光</button>
-                <button class="nav-btn" data-cat="fire" data-theme="fire">火舞</button>
-                <button class="nav-btn" data-cat="portfolio" data-theme="portfolio">作品</button>
-                <button class="nav-btn" data-cat="parts" data-theme="parts">材料</button>
-                <button class="nav-btn" data-cat="agency" data-theme="agency">代理</button>
-                <button class="nav-btn" data-cat="service" data-theme="service">服務</button>
-                <button class="nav-btn" data-cat="tutorial" data-theme="tutorial">教學</button>
-                <button class="nav-btn" data-cat="about" data-theme="about">勁梅</button>
-            </nav>
-        </div>
-    </header>
-
-    <audio id="bgm-player" loop preload="none">
-        // <source src="bgm.mp3" type="audio/mpeg">
-    </audio>
-
-    <div class="container">
-        <aside class="sidebar">
-            <div class="sidebar-title" id="sidebar-label">項目</div>
-            <div id="sidebar-items" style="display: flex; flex-direction: column; gap: 6px; width: 100%;"></div>
-        </aside>
-
-        <main class="main-content">
-            <div class="carousel-wrapper">
-                <div class="carousel-track" id="carousel-track"></div>
-                <div class="carousel-indicator" id="carousel-num">1 / 1</div>
-            </div>
-
-            <div class="compact-action-bar" id="purchase-bar">
-                <div>
-                    <span style="font-size:0.75rem; color:var(--text-sub);">單價：</span>
-                    <span class="price-badge" id="product-price">$0</span>
-                </div>
-                <button class="btn-add-cart" id="btn-add-cart" onclick="addToCartCurrent()">+ 加入詢問清單</button>
-            </div>
-
-            <div class="deep-dive-grid" id="deep-dive-container">
-                <div class="dive-card">
-                    <div class="dive-title">⚙️ <span id="dive-title-1">規格特性</span></div>
-                    <div class="dive-text" id="dive-text-1">正在載入詳細內容...</div>
-                </div>
-                <div class="dive-card">
-                    <div class="dive-title">💡 <span id="dive-title-2">技術功能</span></div>
-                    <div class="dive-text" id="dive-text-2">正在載入詳細內容...</div>
-                </div>
-            </div>
-        </main>
-    </div>
-    <div class="cart-backdrop" id="cart-backdrop" onclick="toggleCartDrawer(false)"></div>
-    <div class="cart-drawer" id="cart-drawer">
-        <div class="cart-header">
-            <h3 style="font-size:1rem;">🛒 詢問清單</h3>
-            <button onclick="toggleCartDrawer()" style="background:none; border:none; color:#fff; font-size:1.1rem; cursor:pointer;">✕</button>
-        </div>
-        <div class="cart-items" id="cart-list-container">
-            <p style="color:var(--text-sub); font-size:0.8rem;">目前無商品</p>
-        </div>
-        <div class="cart-footer">
-            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.85rem;">
-                <span>預估合計：</span>
-                <span id="cart-drawer-total" style="color:var(--theme-accent); font-weight:bold;">$0</span>
-            </div>
-            <button class="copy-all-btn" onclick="copyCartText()">📋 複製清單</button>
-        </div>
-    </div>
-
-    <script>
-        let currentLang = 'zh';
-
-        // 8 大分類資料庫結構示範 (包含 \n 斷行範例)
-        let database = {};
-
-        let currentCat = 'led';
-        let currentItem = '';
-        let cart = {};
-
-// 初始化：非同步載入 products.csv
-        window.addEventListener('DOMContentLoaded', async () => {
-            setupNavigation();
-            await loadProductsFromCSV(); // 讀取並轉換 CSV
-            renderCategory(currentCat);  // 渲染當前選取類別
-            
-            const track = document.getElementById('carousel-track');
-            track.addEventListener('scroll', () => {
-                const index = Math.round(track.scrollLeft / track.clientWidth);
-                const total = track.children.length;
-                document.getElementById('carousel-num').innerText = `${index + 1} / ${total}`;
-            });
-        });
-        
-        async function loadProductsFromCSV() {
-            try {
-                const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRU1zcprmzJBiS0jx6Fni4q6jY1aJHAhetNSRl4zRxjwjfiFHfuwRJHxty253tN0uHxWM_3IPCfPbm0/pub?output=csv');
-                //const response = await fetch('products.csv');
-                if (!response.ok) throw new Error('找不到 products.csv 檔案');
-                const csvText = await response.text();
-        
-                // 使用 PapaParse 解析 CSV 文字
-                const parsed = Papa.parse(csvText, {
-                    header: true,         // 第一行作為屬性名稱
-                    skipEmptyLines: true  // 跳過空白行
-                });
-        
-                // 重構為 8 大分類物件
-                database = {
-                    led: [], fire: [], portfolio: [], parts: [],
-                    agency: [], service: [], tutorial: [], about: []
-                };
-        
-                parsed.data.forEach(row => {
-                    const cat = row.category ? row.category.trim() : 'parts';
-                    if (database[cat]) {
-                        database[cat].push({
-                            category: cat, // <-- 確保有保留這行！
-                            id: row.id,
-                            name_zh: row.name_zh || '',
-                            name_en: row.name_en || '',
-                            tags_zh: (row.tags_zh || '').split(/[/,，]/).map(t => t.trim()).filter(Boolean),
-                            tags_en: (row.tags_en || '').split(/[/,]/).map(t => t.trim()).filter(Boolean),
-                            price: Number(row.price) || 0,
-                            imgPrefix: row.imgPrefix || '',
-                            manualUrl: row.manualUrl || '',
-                            desc_zh: row.desc_zh || '',
-                            desc_en: row.desc_en || '',
-                            dive1_zh: row.dive1_zh || '',
-                            dive1_en: row.dive1_en || '',
-                            dive2_zh: row.dive2_zh || '',
-                            dive2_en: row.dive2_en || ''
-                        });
-                    }
-                });
-                console.log("CSV 載入成功，已解析商品：", database);
-            } catch (err) {
-                console.error("載入 CSV 失敗：", err);
-            }
-            currentItem = database.led[0];
-        }
-
-        function setupNavigation() {
-            const buttons = document.querySelectorAll('#top-nav .nav-btn');
-            buttons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    buttons.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-
-                    const cat = btn.dataset.cat;
-                    const theme = btn.dataset.theme;
-                    document.body.setAttribute('data-theme', theme);
-                    currentCat = cat;
-                    renderCategory(cat);
-                });
-            });
-        }
-
-        function renderCategory(catKey) {
-            const items = database[catKey] || [];
-            const sidebarContainer = document.getElementById('sidebar-items');
-            sidebarContainer.innerHTML = '';
-
-            // 作品、服務、教學、勁梅 類別自動隱藏選購欄
-            const purchaseBar = document.getElementById('purchase-bar');
-            //            const noBuyCats = ['portfolio', 'service', 'tutorial', 'about'];
-            const noBuyCats = ['service','agency', 'about'];
-            if (noBuyCats.includes(catKey)) {
-                purchaseBar.style.display = 'none';
-            } else {
-                purchaseBar.style.display = 'flex';
-            }
-
-            items.forEach((item, index) => {
-                const btn = document.createElement('button');
-                btn.className = `item-btn ${index === 0 ? 'active' : ''}`;
-                btn.innerText = currentLang === 'zh' ? item.name_zh : item.name_en;
-                btn.onclick = () => {
-                    document.querySelectorAll('.item-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    loadItemDetails(item);
-                };
-                sidebarContainer.appendChild(btn);
-            });
-
-            if (items.length > 0) {
-                loadItemDetails(items[0]);
-            }
-        }
-
-        async function loadItemDetails(item) {
-            currentItem = item;
-            document.getElementById('product-price').innerText = item.price > 0 ? `$${item.price}` : '客製討論';
-            document.getElementById('dive-text-1').innerText = currentLang === 'zh' ? item.dive1_zh : item.dive1_en;
-            document.getElementById('dive-text-2').innerText = currentLang === 'zh' ? item.dive2_zh : item.dive2_en;
-
-            const track = document.getElementById('carousel-track');
-            track.innerHTML = '';
-
-            const tags = currentLang === 'zh' ? item.tags_zh : item.tags_en;
-            const title = currentLang === 'zh' ? item.name_zh : item.name_en;
-            const desc = currentLang === 'zh' ? item.desc_zh : item.desc_en;
-
-            const manualBtnHtml = (item.manualUrl && item.manualUrl.trim() !== "")
-                ? `<a href="${item.manualUrl}" target="_blank" class="manual-link-btn">📖 ${currentLang === 'zh' ? '詳細介紹' : 'Documentation'} ↗</a>` 
-                : '';
-
-            const heroSlide = document.createElement('div');
-            heroSlide.className = 'carousel-slide';
-            heroSlide.innerHTML = `
-                <div class="hero-card">
-                    <div>
-                        <div class="hero-tags">
-                            ${tags.map(t => `<span class="hero-tag">${t}</span>`).join('')}
-                        </div>
-                        <div class="hero-title">${title}</div>
-                        <div class="hero-desc">${desc}</div>
-                    </div>
-                    ${manualBtnHtml}
-                </div>
-            `;
-            track.appendChild(heroSlide);
-
-            const images = await probeSequenceImages(item.imgPrefix);
-            if (images.length === 0) {
-                images.push(createSvgFallback(title));
-            }
-
-            images.forEach(src => {
-                const slide = document.createElement('div');
-                slide.className = 'carousel-slide';
-                slide.innerHTML = `<img src="${src}" alt="${title}">`;
-                track.appendChild(slide);
-            });
-
-            track.scrollLeft = 0;
-            document.getElementById('carousel-num').innerText = `1 / ${track.children.length}`;
-        }
-
-        async function probeSequenceImages(prefix, max = 10) {
-            const results = [];
-            for (let i = 1; i <= max; i++) {
-                const num = String(i).padStart(2, '0');
-                const url = `${prefix}${num}.jpg`;
-                const exists = await checkImageExists(url);
-                if (exists) results.push(url);
-                else break;
-            }
-            return results;
-        }
-
-        function checkImageExists(url) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(false);
-                img.src = url;
-            });
-        }
-
-        function createSvgFallback(title) {
-            const encoded = encodeURIComponent(`
-                <svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
-                    <rect width="800" height="450" fill="#0b0b12"/>
-                    <circle cx="400" cy="225" r="70" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
-                    <text x="400" y="230" fill="rgba(255,255,255,0.3)" font-size="15" font-family="sans-serif" text-anchor="middle">
-                        [ 圖片庫: ${title} ]
-                    </text>
-                </svg>
-            `);
-            return `data:image/svg+xml;utf8,${encoded}`;
-        }
-
-        /* 語系切換：就地更新，不彈回首張圖片 */
-        function toggleLanguage() {
-            currentLang = currentLang === 'zh' ? 'en' : 'zh';
-            document.getElementById('lang-text').innerText = currentLang === 'zh' ? 'TW' : 'EN';
-
-            const items = database[currentCat] || [];
-            const sidebarBtns = document.querySelectorAll('#sidebar-items .item-btn');
-            items.forEach((item, index) => {
-                if (sidebarBtns[index]) {
-                    sidebarBtns[index].innerText = currentLang === 'zh' ? item.name_zh : item.name_en;
-                }
-            });
-
-            if (currentItem) {
-                document.getElementById('dive-text-1').innerText = currentLang === 'zh' ? currentItem.dive1_zh : currentItem.dive1_en;
-                document.getElementById('dive-text-2').innerText = currentLang === 'zh' ? currentItem.dive2_zh : currentItem.dive2_en;
-
-                const heroCard = document.querySelector('.carousel-slide .hero-card');
-                if (heroCard) {
-                    const tags = currentLang === 'zh' ? currentItem.tags_zh : currentItem.tags_en;
-                    const title = currentLang === 'zh' ? currentItem.name_zh : currentItem.name_en;
-                    const desc = currentLang === 'zh' ? currentItem.desc_zh : currentItem.desc_en;
-
-                    const tagsContainer = heroCard.querySelector('.hero-tags');
-                    if (tagsContainer) {
-                        tagsContainer.innerHTML = tags.map(t => `<span class="hero-tag">${t}</span>`).join('');
-                    }
-                    const titleEl = heroCard.querySelector('.hero-title');
-                    if (titleEl) titleEl.innerText = title;
-
-                    const descEl = heroCard.querySelector('.hero-desc');
-                    if (descEl) descEl.innerText = desc;
-
-                    const manualBtn = heroCard.querySelector('.manual-link-btn');
-                    if (manualBtn) {
-                        manualBtn.innerHTML = `📖 ${currentLang === 'zh' ? '詳細介紹' : 'Documentation'} ↗`;
-                    }
-                }
-            }
-
-            updateCartUI();
-            const safetyEl = document.getElementById('footer-safety-notice');
-            if (safetyEl) {
-                safetyEl.innerText = currentLang === 'zh'
-                    ? '⚠️ 本站火舞耗材與客製電路裝備專為專業演出與訓練設計，請嚴格遵守火具點火與鋰電池充放電安全規範。'
-                    : '⚠️ Props and electronics are engineered for professional flow arts. Users assume full responsibility for fire and electrical safety.';
-            }
-        }
-        let lastBgmIndex = -1;
-        
-        function toggleAudio() {
-            const audio = document.getElementById('bgm-player');
-            const btn = document.getElementById('music-btn');
-            const status = document.getElementById('music-status');
-        
-            if (audio.paused) {
-                // 如果目前沒有正在播的歌曲（或剛打開），隨機選一首 01 ~ 05
-                if (!audio.src || audio.ended) {
-                    let randomIndex;
-                    do {
-                        // 隨機產生 1 到 5 的數字
-                        randomIndex = Math.floor(Math.random() * 5) + 1;
-                    } while (randomIndex === lastBgmIndex); // 避免連續重複
-                    
-                    lastBgmIndex = randomIndex;
-                    const numStr = String(randomIndex).padStart(2, '0'); // 轉為 "01", "02"...
-                    audio.src = `audio/bgm${numStr}.mp3`;
-                }
-        
-                audio.play().then(() => {
-                    btn.classList.add('playing');
-                    status.innerText = 'ON';
-                }).catch(err => {
-                    console.warn("音訊播放被阻擋或找不到檔案：", err);
-                    alert(`找不到對應的音訊檔案（${audio.src}），請確認 audio/ 資料夾內有放入 bgm01~05.mp3！`);
-                });
-            } else {
-                // 暫停播放
-                audio.pause();
-                btn.classList.remove('playing');
-                status.innerText = 'BGM';
-            }
-        }
-        
-        // （加分體驗）當一首歌播完時，自動隨機換下一首繼續播：
-        document.addEventListener('DOMContentLoaded', () => {
-            const audio = document.getElementById('bgm-player');
-            if (audio) {
-                audio.addEventListener('ended', () => {
-                    // 清空 src，讓下次觸發時重新隨機抽一首
-                    audio.src = '';
-                    toggleAudio();
-                });
-            }
-        });
-        // 按 ESC 鍵也能快速關閉購物車
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') toggleCartDrawer(false);
-        });
-        function addToCartCurrent() {
-            if (!currentItem || currentItem.price === 0) return;
-            cart[currentItem.id] = (cart[currentItem.id] || 0) + 1;
-            updateCartUI();
-            toggleCartDrawer(true);
-        }
-        // 8 大分類對應的主題色表
-        const categoryThemeMap = {
-            led:       { color: '#a5f3fc', glow: 'rgba(165, 243, 252, 0.25)' }, // 青白
-            fire:      { color: '#ff3b30', glow: 'rgba(255, 59, 48, 0.3)' },    // 紅
-            portfolio: { color: '#ff9500', glow: 'rgba(255, 149, 0, 0.3)' },    // 橙
-            parts:     { color: '#ffd60a', glow: 'rgba(255, 214, 10, 0.25)' },  // 黃
-            agency:    { color: '#30d158', glow: 'rgba(48, 209, 88, 0.3)' },    // 綠
-            service:   { color: '#0a84ff', glow: 'rgba(10, 132, 255, 0.3)' },   // 藍
-            tutorial:  { color: '#bf5af2', glow: 'rgba(191, 90, 242, 0.3)' },   // 紫
-            about:     { color: '#e0c3fc', glow: 'rgba(224, 195, 252, 0.3)' }    // 紫白
-        };
-        
-        function updateCartUI() {
-            let count = 0;
-            let total = 0;
-            const container = document.getElementById('cart-list-container');
-            container.innerHTML = '';
-        
-            const cartIds = Object.keys(cart);
-            if (cartIds.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-sub); font-size:0.8rem; padding:8px 0;">目前無商品</p>`;
-                document.getElementById('cart-counter').innerText = 0;
-                document.getElementById('cart-drawer-total').innerText = `$0`;
-                return;
-            }
-        
-            cartIds.forEach(id => {
-                const qty = cart[id];
-                count += qty;
-        
-                // 關鍵修復：從 database 的 8 個分類中，同時找出商品物件 (prod) 以及它所屬的分類鍵值 (foundCat)
-                let prod = null;
-                let foundCat = 'parts'; // 預設值
-        
-                for (const [catKey, items] of Object.entries(database)) {
-                    const found = items.find(p => p.id === id);
-                    if (found) {
-                        prod = found;
-                        foundCat = prod.category || catKey; // 優先吃屬性，沒有就吃所屬分類 key
-                        break;
-                    }
-                }
-        
-                if (prod) {
-                    const subtotal = prod.price * qty;
-                    total += subtotal;
-        
-                    // 準確抓取該商品分類的主題色
-                    const theme = categoryThemeMap[foundCat] || { color: '#a5f3fc', glow: 'rgba(165, 243, 252, 0.2)' };
-        
-                    const row = document.createElement('div');
-                    row.className = 'cart-row';
-                    // 動態注入該商品的專屬色彩
-                    row.style.setProperty('--item-color', theme.color);
-                    row.style.setProperty('--item-glow', theme.glow);
-        
-                    row.innerHTML = `
-                        <div>
-                            <div style="font-weight: 500; color: #fff;">${currentLang === 'zh' ? prod.name_zh : prod.name_en}</div>
-                            <div style="color:var(--text-sub); font-size:0.75rem; margin-top:2px;">
-                                $${prod.price} × ${qty}
-                            </div>
-                        </div>
-                        <div style="font-weight: bold; color: ${theme.color}; font-size: 0.95rem; text-shadow: 0 0 8px ${theme.glow};">
-                            $${subtotal}
-                        </div>
-                    `;
-                    container.appendChild(row);
-                }
-            });
-        
-            document.getElementById('cart-counter').innerText = count;
-            document.getElementById('cart-drawer-total').innerText = `$${total}`;
-        }
-
-        function toggleCartDrawer(forceState = null) {
-            const drawer = document.getElementById('cart-drawer');
-            const backdrop = document.getElementById('cart-backdrop');
-        
-            // 判斷是要開啟還是關閉
-            const isOpen = (forceState !== null) 
-                ? forceState 
-                : !drawer.classList.contains('open');
-        
-            if (isOpen) {
-                drawer.classList.add('open');
-                backdrop.classList.add('open');
-            } else {
-                drawer.classList.remove('open');
-                backdrop.classList.remove('open');
-            }            
-        }
-        
-
-        function copyCartText() {
-            const allProducts = Object.values(database).flat();
-            const keys = Object.keys(cart);
-            if (keys.length === 0) {
-                alert('清單內尚無商品！');
-                return;
-            }
-
-            let text = `👋 您好！我想向【勁梅演光】諮詢以下品項：\n`;
-            text += `=========================\n`;
-            let total = 0;
-            keys.forEach(id => {
-                const p = allProducts.find(item => item.id === id);
-                const qty = cart[id];
-                const sub = p.price * qty;
-                total += sub;
-                text += `🔸 ${p.name_zh} × ${qty} ($${sub})\n`;
-            });
-            text += `=========================\n`;
-            text += `💰 預估金額：$${total}\n\n`;
-            text += `（備註：長度規格 / 特殊訂製需求請在此填寫）`;
-
-            navigator.clipboard.writeText(text).then(() => {
-                alert('清單已成功複製！請直接前往 FB / IG 私訊貼上進行討論 👌');
-            });
-        }
-    </script>
-        <!-- 頁尾宣告區 -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-brand">
-                <span class="footer-title">勁梅演光 Panda'Spectrum</span>
-                <span class="footer-slogan">Crafted with precision for stage & flow performers.</span>
-            </div>
-    
-            <div class="footer-disclaimer">
-                <p id="footer-safety-notice">
-                    ⚠️ 本站火舞耗材與客製電路裝備專為專業演出與訓練設計，請嚴格遵守火具點火與鋰電池充放電安全規範。
-                </p>
-            </div>
-    
-            <div class="footer-meta">
-                <span>© 2016–2026 Panda'Spectrum. All Rights Reserved.</span>
-                <div class="footer-links">
-                    <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
-                    <span>•</span>
-                    <a href="https://facebook.com" target="_blank" rel="noopener">Facebook</a>
-                    <span>•</span>
-                    <a href="mailto:contact@pandaspectrum.com">Contact</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+            white-

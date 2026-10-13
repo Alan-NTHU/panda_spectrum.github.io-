@@ -3,23 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業道具與工藝</title>
+    <title>勁梅演光 Panda'Spectrum - Flow art 道具工作室</title>
     <style>
         :root {
-            --theme-glow: rgba(0, 240, 255, 0.15);
-            --theme-accent: #00f0ff;
-            --bg-base: #0a0a0f;
-            --card-bg: rgba(22, 22, 30, 0.75);
-            --border-color: rgba(255, 255, 255, 0.08);
-            --text-main: #f0f0f5;
-            --text-sub: #8e8e9f;
-        }
-
-        body[data-theme="led"] { --theme-glow: rgba(0, 240, 255, 0.12); --theme-accent: #00f0ff; }
-        body[data-theme="fire"] { --theme-glow: rgba(255, 85, 0, 0.14); --theme-accent: #ff5500; }
-        body[data-theme="parts"] { --theme-glow: rgba(0, 255, 136, 0.12); --theme-accent: #00ff88; }
-        body[data-theme="knowledge"] { --theme-glow: rgba(255, 204, 0, 0.14); --theme-accent: #ffcc00; }
-        body[data-theme="about"] { --theme-glow: rgba(180, 75, 255, 0.15); --theme-accent: #b44bff; }
+                    --theme-glow: rgba(165, 243, 252, 0.14);
+                    --theme-accent: #a5f3fc;
+                    --bg-base: #0a0a0f;
+                    --card-bg: rgba(22, 22, 30, 0.75);
+                    --border-color: rgba(255, 255, 255, 0.08);
+                    --text-main: #f0f0f5;
+                    --text-sub: #8e8e9f;
+                }
+        
+                /* 8 大主題色定義 */
+                body[data-theme="led"]       { --theme-glow: rgba(165, 243, 252, 0.14); --theme-accent: #a5f3fc; } /* 青白 */
+                body[data-theme="fire"]      { --theme-glow: rgba(255, 59, 48, 0.16);   --theme-accent: #ff3b30; } /* 紅 */
+                body[data-theme="portfolio"] { --theme-glow: rgba(255, 149, 0, 0.15);   --theme-accent: #ff9500; } /* 橙 */
+                body[data-theme="parts"]     { --theme-glow: rgba(255, 214, 10, 0.14);  --theme-accent: #ffd60a; } /* 黃 */
+                body[data-theme="agency"]    { --theme-glow: rgba(48, 209, 88, 0.15);   --theme-accent: #30d158; } /* 綠 */
+                body[data-theme="service"]   { --theme-glow: rgba(10, 132, 255, 0.15);  --theme-accent: #0a84ff; } /* 藍 */
+                body[data-theme="tutorial"]  { --theme-glow: rgba(191, 90, 242, 0.16);  --theme-accent: #bf5af2; } /* 紫 */
+                body[data-theme="about"]     { --theme-glow: rgba(224, 195, 252, 0.18); --theme-accent: #e0c3fc; } /* 紫白 */
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -445,7 +449,7 @@
                     </button>
                     <!-- 純文字語系切換 (無地球標籤) -->
                     <button class="btn-icon-compact" id="lang-btn" onclick="toggleLanguage()">
-                        <span id="lang-text">EN</span>
+                        <span id="lang-text">TW</span>
                     </button>
                     <!-- 緊湊購物車 -->
                     <button class="btn-icon-compact" onclick="toggleCartDrawer()">
@@ -474,7 +478,7 @@
     <div class="container">
         <!-- 側邊欄：子項目選單 -->
         <aside class="sidebar">
-            <div class="sidebar-title" id="sidebar-label">項目清單</div>
+            <div class="sidebar-title" id="sidebar-label">項目</div>
             <div id="sidebar-items" style="display: flex; flex-direction: column; gap: 6px; width: 100%;"></div>
         </aside>
 
@@ -512,7 +516,7 @@
     <!-- 購物清單抽屜 -->
     <div class="cart-drawer" id="cart-drawer">
         <div class="cart-header">
-            <h3 style="font-size:1rem;">🛒 選購清單</h3>
+            <h3 style="font-size:1rem;">🛒 詢問清單</h3>
             <button onclick="toggleCartDrawer()" style="background:none; border:none; color:#fff; font-size:1.1rem; cursor:pointer;">✕</button>
         </div>
         <div class="cart-items" id="cart-list-container">
@@ -523,7 +527,7 @@
                 <span>預估合計：</span>
                 <span id="cart-drawer-total" style="color:var(--theme-accent); font-weight:bold;">$0</span>
             </div>
-            <button class="copy-all-btn" onclick="copyCartText()">📋 複製清單結賬</button>
+            <button class="copy-all-btn" onclick="copyCartText()">📋 複製清單</button>
         </div>
     </div>
 
@@ -541,12 +545,12 @@
                     price: 4500,
                     imgPrefix: "images/staff_led_",
                     manualUrl: "https://example.com/manual-led-staff.pdf",
-                    desc_zh: "專為極致光影演出打造，內部採用微控制器精密驅動，支援多種即時光效模式與無線編組傳輸。",
-                    desc_en: "Built for stage performance with real-time wireless cues and dynamic light visual synthesis.",
-                    dive1_zh: "採用高透光防爆 PC 管封裝，具備耐摔、平衡性極佳的重心設計，適合接觸與雙棍拋接技巧。",
-                    dive1_en: "Encased in high-impact polycarbonate tubes for optimal balance and durability.",
-                    dive2_zh: "支援 Type-C 快充，充電時指示燈紅轉藍即代表飽電。請避免在火源直接燒烤。",
-                    dive2_en: "Supports Type-C fast charging. Store in a cool, dry environment away from heat sources."
+                    desc_zh: "專為極致光影演出打造。\n內部採用精密微控制器驅動，支援即時光效模式與無線編組傳輸。",
+                    desc_en: "Built for stage performance.\nFeatures real-time wireless cues and dynamic visual synthesis.",
+                    dive1_zh: "1. 高透光防爆 PC 管封裝\n2. 完美配重平衡，適合 Contact 技巧\n3. 模組化快拆設計",
+                    dive1_en: "1. High-impact polycarbonate tube\n2. Balanced weight for contact flow\n3. Modular quick-release structure",
+                    dive2_zh: "支援 Type-C 快充。\n充電時紅燈轉藍燈代表飽電，請避免火源直接燒烤。",
+                    dive2_en: "Supports Type-C fast charging.\nAvoid direct contact with fire or excessive heat."
                 }
             ],
             fire: [
@@ -558,13 +562,31 @@
                     tags_en: ["Flame Retardant", "Precision Length", "Beyond Kevlar"],
                     price: 1200,
                     imgPrefix: "images/fire_technora_",
-                    manualUrl: "https://example.com/manual-technora.pdf",
-                    desc_zh: "火具鐵鍊的終極替代方案。兼具輕量、柔軟手感與慢熱傳導特性，大幅減少傳統鐵鍊燙傷與物理打擊傷害。",
-                    desc_en: "The ultimate chain replacement. Extremely lightweight, soft hand-feel, and slow thermal conduction.",
-                    dive1_zh: "高密度編織技術，每條均經多次微調拉伸，將長度手工誤差精確鎖定在 0.5cm 以內。",
-                    dive1_en: "High-density weave with strict manual tension adjustment to keep length variance under 0.5 cm.",
-                    dive2_zh: "定期使用乾布擦拭煤油殘漬。雖然防火，但長期接觸火焰仍會自然老化，建議定期檢查外觀是否有斷絲。",
-                    dive2_en: "Inspect regularly for fraying. Wipe clean after fuel burns to prolong fiber lifespan."
+                    manualUrl: "",
+                    desc_zh: "火具鐵鍊的終極替代材料。\n兼具輕量、柔軟手感與慢熱傳導特性，大幅減少燙傷與碰撞物理傷害。",
+                    desc_en: "The ultimate chain replacement.\nExtremely lightweight, soft hand-feel, and slow heat conduction.",
+                    dive1_zh: "高密度手工編織技術。\n每條均經多次微調拉伸，將長度誤差精確鎖定在 0.5cm 以內。",
+                    dive1_en: "High-density manual weave.\nTension-adjusted to keep length variance strictly under 0.5 cm.",
+                    dive2_zh: "定期使用乾布擦拭燃料殘漬。\n雖然防火，但長期接觸火焰仍會自然老化，請定期檢查外觀是否有斷絲。",
+                    dive2_en: "Inspect regularly for fraying.\nWipe clean after use to prolong service life."
+                }
+            ],
+            portfolio: [
+                {
+                    id: "port_01",
+                    name_zh: "光軌視覺演出實錄",
+                    name_en: "Light Trail Visual Performance",
+                    tags_zh: ["舞台紀錄", "長曝光攝影", "演出編排"],
+                    tags_en: ["Stage Record", "Long Exposure", "Choreography"],
+                    price: 0,
+                    imgPrefix: "images/port_stage_",
+                    manualUrl: "",
+                    desc_zh: "勁梅演光團隊歷年光影演出與長曝光光軌紀錄。\n結合程式控光與高難度流動肢體展演。",
+                    desc_en: "Performance archives and light painting visual projects by Panda'Spectrum.",
+                    dive1_zh: "多通道無線同步控光系統。\n在暗場中呈現銳利幾何線條與流動光色漸變。",
+                    dive1_en: "Multi-channel wireless light control creating vivid geometric spatial patterns.",
+                    dive2_zh: "提供商業演出委託、跨界藝術合作與舞台編排技術支援。",
+                    dive2_en: "Available for commercial showcases, art collaborations, and technical prop design."
                 }
             ],
             parts: [
@@ -577,12 +599,12 @@
                     price: 99,
                     imgPrefix: "images/mat_acetate_",
                     manualUrl: "",
-                    desc_zh: "Threeworlds 組合棍收邊的秘密武器！不同於傳統絕緣膠帶易出油脫膠，此款具備細緻布紋與長效固定力。",
-                    desc_en: "The secret finishing tape for modular staffs. Fabric texture prevents residue and adhesive failure.",
-                    dive1_zh: "耐溫範圍達 105℃ ~ 130℃，具備良好從形性與絕緣性能，黏貼於不規則握把弧度上依舊平整服貼。",
-                    dive1_en: "Temperature rating up to 130°C. Highly conformable on irregular surfaces and grips.",
-                    dive2_zh: "使用時稍微拉緊後貼附，最後一圈自然貼合不拉伸，可確保數月不翹邊、不黏手。",
-                    dive2_en: "Wrap with light tension; apply the final loop without tension to prevent edge lifting."
+                    desc_zh: "Threeworlds 組合棍收邊的秘密武器！\n細緻布紋手感，絕不溢膠脫膠。",
+                    desc_en: "The secret finishing tape for modular staffs.\nFabric texture prevents sticky glue residue.",
+                    dive1_zh: "耐溫範圍達 105℃ ~ 130℃。\n具備良好從形性與絕緣性能，黏貼於不規則曲面上依然服貼。",
+                    dive1_en: "Rated up to 130°C.\nHighly conformable on grips and irregular surfaces.",
+                    dive2_zh: "使用時稍微拉緊貼附，最後一圈自然貼合不拉伸，可保數月不翹邊。",
+                    dive2_en: "Wrap with light tension; apply the final loop without stretching to prevent peeling."
                 },
                 {
                     id: "parts_02",
@@ -593,30 +615,66 @@
                     price: 180,
                     imgPrefix: "images/mat_silicone_",
                     manualUrl: "",
-                    desc_zh: "完全無背膠！拉伸纏繞後自身於 24 小時內永久融合為一體。極致耐高溫與高壓絕緣，火具防燙隔熱首選。",
-                    desc_en: "Zero adhesive residue. Fuses to itself within 24 hours. Rated up to 260°C for thermal shielding.",
-                    dive1_zh: "透明度高，覆蓋在 LED 燈條走線處不遮擋流光；伸長率可達 300%，能緊密包覆各種接頭。",
-                    dive1_en: "High clarity maintains full LED brightness. Stretches up to 300% for watertight wrapping.",
-                    dive2_zh: "纏繞時需拉伸至原本長度的 1.5 ~ 2 倍以激發分子自融特性。一旦融合後需用刀片切割移除。",
-                    dive2_en: "Stretch 1.5x to 2x during application to activate fusing. Must be sliced to remove once cured."
+                    desc_zh: "完全無背膠！拉伸後自身永久融合。\n極致耐高溫與高壓絕緣，火具防燙隔熱首選。",
+                    desc_en: "Zero adhesive residue. Fuses to itself within 24 hours.\nRated up to 260°C for heat shielding.",
+                    dive1_zh: "透明度高，覆蓋在 LED 燈條走線處不遮擋光線；伸長率可達 300%。",
+                    dive1_en: "High clarity maintains full brightness. Stretches up to 300% for watertight seals.",
+                    dive2_zh: "纏繞時需拉伸至原本長度的 1.5 ~ 2 倍以激發分子自融特性。",
+                    dive2_en: "Stretch 1.5x to 2x during application to activate fusing."
                 }
             ],
-            knowledge: [
+            agency: [
                 {
-                    id: "know_01",
-                    name_zh: "國外代訂與客製指南",
-                    name_en: "Global Sourcing & Custom Guide",
-                    tags_zh: ["代購指南", "Threeworlds", "Flowtoys"],
-                    tags_en: ["Sourcing", "Direct Import", "Support"],
+                    id: "agen_01",
+                    name_zh: "Threeworlds 國際品牌代訂",
+                    name_en: "Threeworlds Props Agency",
+                    tags_zh: ["澳洲原裝", "組合棍", "Dragon Staff"],
+                    tags_en: ["Imported", "Modular Staff", "Dragon Staff"],
                     price: 0,
-                    imgPrefix: "images/info_order_",
-                    manualUrl: "https://example.com/custom-rules.pdf",
-                    desc_zh: "提供國際知名品牌（如 Threeworlds、Flowtoys）道具與零件代訂服務，協助避開昂貴關稅與國際運送損壞風險。",
-                    desc_en: "Assisting players in importing high-end props from worldwide brands safely with unified shipping.",
-                    dive1_zh: "定期每月中旬集單出貨。非標品、特別長度之碳纖維桿均可來信討論代訂可行性。",
-                    dive1_en: "Orders placed mid-month. Custom length rods and accessories welcome for inquiries.",
-                    dive2_zh: "收到代訂商品若有原廠瑕疵，勁梅演光提供在地第一線檢測與代向原廠溝通退換之服務。",
-                    dive2_en: "First-line inspection and warranty liaison provided directly by our studio."
+                    imgPrefix: "images/agency_tw_",
+                    manualUrl: "",
+                    desc_zh: "澳洲頂級模組化火舞與接觸道具品牌官方正規進口諮詢。\n協助處理國際關稅與海運保障。",
+                    desc_en: "Official sourcing assistance for Threeworlds modular gear, hubs, and accessories.",
+                    dive1_zh: "每月定期集單，可訂購鋁合金接頭、碳纖維中心管與龍棍頭 (Hubs)。",
+                    dive1_en: "Regular group orders covering aluminum connectors, carbon fiber cores, and hubs.",
+                    dive2_zh: "在地現貨耗材支援與原廠保修諮詢窗口。",
+                    dive2_en: "Local consumable support and warranty consulting."
+                }
+            ],
+            service: [
+                {
+                    id: "serv_01",
+                    name_zh: "火具/光具保養維修與客製",
+                    name_en: "Maintenance & Custom Build",
+                    tags_zh: ["換繩換頭", "配重微調", "握把布重新包覆"],
+                    tags_en: ["Re-wicking", "Re-balancing", "Re-gripping"],
+                    price: 0,
+                    imgPrefix: "images/serv_repair_",
+                    manualUrl: "",
+                    desc_zh: "道具手感衰退或耗損？\n我們提供專業重新纏繞握把、Technora 繩練換新與重心微調服務。",
+                    desc_en: "Professional prop overhaul, re-gripping, Technora leash replacements, and balance tuning.",
+                    dive1_zh: "根據表演者手長、肩寬與旋轉習慣，客製計算最合適的重心點與握距。",
+                    dive1_en: "Custom balancing based on your height, wingspan, and spinning style.",
+                    dive2_zh: "歡迎私訊粉專附上現有道具照片，即可獲得免費評估與報價。",
+                    dive2_en: "Message our social pages with photos of your current prop for a free estimate."
+                }
+            ],
+            tutorial: [
+                {
+                    id: "tuto_01",
+                    name_zh: "Technora 繩練安全檢驗手冊",
+                    name_en: "Technora Safety Inspection",
+                    tags_zh: ["安全第一", "耗損評估", "保養指南"],
+                    tags_en: ["Safety First", "Wear Assessment", "Maintenance"],
+                    price: 0,
+                    imgPrefix: "images/tuto_rope_",
+                    manualUrl: "",
+                    desc_zh: "火舞表演安全至關重要！\n本篇教你如何以 3 步驟檢視繩練磨耗程度，判斷何時必須更換。",
+                    desc_en: "Prop safety is non-negotiable.\nA concise 3-step guide to assessing wear and knowing when to retire your rope.",
+                    dive1_zh: "1. 觀察外層纖維起毛情況\n2. 檢查連接環受力點是否有壓扁變形\n3. 彎折測試是否有內部硬化脆裂感",
+                    dive1_en: "1. Check for surface fuzzing\n2. Inspect load points at swivels for deformation\n3. Bend test to feel for internal brittleness",
+                    dive2_zh: "若發現直徑磨損縮小超過 20%，請務必立即停止點火使用並進行更換。",
+                    dive2_en: "If diameter is reduced by more than 20%, retire immediately."
                 }
             ],
             about: [
@@ -629,8 +687,8 @@
                     price: 0,
                     imgPrefix: "images/about_hero_",
                     manualUrl: "https://instagram.com",
-                    desc_zh: "致力於研發高性能 LED 演出裝備與極致火舞耗材。結合工程學、嵌入式電路與手工編織工藝，為表演者帶來最安心的手感。",
-                    desc_en: "Dedicated to designing elite LED props and high-grade fire performance gear since 2016.",
+                    desc_zh: "致力於研發高性能 LED 演出裝備與極致火舞耗材。\n結合工程學、嵌入式電路與手工編織工藝，為表演者帶來最安心的手感。",
+                    desc_en: "Dedicated to designing elite LED props and high-grade fire performance gear since 2016.\nMerging engineering, electronics, and manual craft.",
                     dive1_zh: "每一支客製棍、每一條 Technora 繩練，皆由主理人與匠人親自手工調試配重與平衡性。",
                     dive1_en: "Every staff and Technora leash is personally balanced and tested before leaving the workshop.",
                     dive2_zh: "追蹤官方 IG / FB 粉專：隨時掌握工作坊開課動態、新品開箱與舞台光軌視覺展演。",
@@ -638,6 +696,7 @@
                 }
             ]
         };
+
 
         let currentCat = 'led';
         let currentItem = database.led[0];
@@ -797,16 +856,10 @@
             return `data:image/svg+xml;utf8,${encoded}`;
         }
 
-        /* 語系切換：僅顯示 ZH 或 EN */
-        function toggleLanguage() {
-            currentLang = currentLang === 'zh' ? 'zh' : 'en';
-            document.getElementById('lang-text').innerText = currentLang === 'zh' ? 'ZH' : 'EN';
-            renderCategory(currentCat);
-        }
         /* 語系切換：僅顯示 ZH 或 EN，且原地更新文字不重置圖片位置 */
         function toggleLanguage() {
             currentLang = currentLang === 'zh' ? 'en' : 'zh';
-            document.getElementById('lang-text').innerText = currentLang === 'zh' ? 'ZH' : 'EN';
+            document.getElementById('lang-text').innerText = currentLang === 'zh' ? 'TW' : 'EN';
         
             // 1. 更新側邊欄按鈕文字
             const items = database[currentCat] || [];

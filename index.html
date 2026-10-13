@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10140355</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10140410</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -168,7 +168,27 @@
             70% { box-shadow: 0 0 0 6px rgba(165, 243, 252, 0); }
             100% { box-shadow: 0 0 0 0 rgba(165, 243, 252, 0); }
         }
-
+        @keyframes nav-pulse-glow {
+            0% {
+                box-shadow: 0 0 6px var(--theme-accent), 0 0 0 0 var(--theme-glow);
+            }
+            50% {
+                box-shadow: 0 0 16px var(--theme-accent), 0 0 0 5px var(--theme-glow);
+            }
+            100% {
+                box-shadow: 0 0 6px var(--theme-accent), 0 0 0 0 var(--theme-glow);
+            }
+        }
+        
+        /* 讓當前選中的類別按鈕套用呼吸特效 */
+        .nav-btn.active {
+            animation: nav-pulse-glow 2.4s infinite ease-in-out;
+        }
+        
+        /* 同時讓音樂按鈕的呼吸光也跟隨當前主題色變換 */
+        .music-btn.playing {
+            animation: nav-pulse-glow 2s infinite ease-in-out;
+        }
         .container {
             max-width: 1200px;
             margin: 0 auto;

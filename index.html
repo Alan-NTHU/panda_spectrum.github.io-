@@ -529,7 +529,7 @@
         let database = {};
 
         let currentCat = 'led';
-        let currentItem = database.led[0];
+        let currentItem = '';
         let cart = {};
 
 // 初始化：非同步載入 products.csv
@@ -589,6 +589,7 @@
             } catch (err) {
                 console.error("載入 CSV 失敗：", err);
             }
+            currentItem = database.led[0];
         }
 
         function setupNavigation() {

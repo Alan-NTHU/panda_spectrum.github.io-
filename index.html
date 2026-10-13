@@ -72,7 +72,9 @@
             border-bottom: 1px solid var(--border-color);
         }
                 /* 確保 header 與內容層在光暈上方 */
-
+       
+        /* 手機版適度縮小光球，避免手機螢幕過亮 */
+        
         .header-inner {
             max-width: 1200px;
             margin: 0 auto;
@@ -112,21 +114,7 @@
             color: var(--text-sub);
             letter-spacing: 0.3px;
         }
-        header, .container {
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* 手機版適度縮小光球，避免手機螢幕過亮 */
-        @media (max-width: 768px) {
-            .ambient-glow {
-                width: 340px;
-                height: 220px;
-                top: -60px;
-                filter: blur(55px);
-                opacity: 0.15;
-            }
-        }
+
         /* 8大類別標籤 (橫向滑動支援) */
         nav.nav-bar {
             display: flex;
@@ -198,8 +186,10 @@
             flex: 1;
             gap: 24px;
             width: 100%;
+            position: relative;
+            z-index: 1;
         }
-
+        
         aside.sidebar {
             width: 240px;
             flex-shrink: 0;
@@ -456,13 +446,44 @@
                 font-size: 0.78rem;
                 flex-shrink: 0;
             }
-
+            .ambient-glow {
+                width: 340px;
+                height: 220px;
+                top: -60px;
+                filter: blur(55px);
+                opacity: 0.15;
+            }
             .container { flex-direction: column; padding: 12px; gap: 14px; }
             aside.sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding-bottom: 4px; }
             .item-btn { white-space: nowrap; flex: 0 0 auto; font-size: 0.8rem; padding: 7px 10px; }
             .deep-dive-grid { grid-template-columns: 1fr; }
             .carousel-wrapper { aspect-ratio: 4 / 3; }
         }
+        .cart-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.45); /* 輕微暗化背景，突顯抽屜 */
+    backdrop-filter: blur(3px);      /* 輕微模糊背景質感 */
+    z-index: 150;                     /* 高於內容，但低於抽屜 */
+    opacity: 0;
+    pointer-events: none;            /* 平常不擋住點擊 */
+    transition: opacity 0.3s ease;
+}
+
+/* 抽屜打開時，啟動遮罩 */
+.cart-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;            /* 啟用點擊，點擊即可關閉 */
+}
+
+/* 確保購物車抽屜在遮罩之上 */
+.cart-drawer {
+    z-index: 200;
+    /* 其餘樣式保持不變 */
+}
     </style>
 </head>
 <body data-theme="led">
@@ -474,7 +495,7 @@
                     <img src="images/logo.png" alt="Logo" class="brand-logo" id="main-logo" 
                          onload="this.style.display='inline-block'" onerror="this.style.display='none'">
                     <div class="brand-text-block">
-                        <span class="brand-main">勁梅演光 version 1014.0210 </span>
+                        <span class="brand-main">勁梅演光 version 1014.0220 </span>
                         <span class="brand-sub">Panda'Spectrum, 2026</span>
                     </div>
                 </a>
@@ -542,7 +563,7 @@
             </div>
         </main>
     </div>
-
+    <div class="cart-backdrop" id="cart-backdrop" onclick="toggleCartDrawer(false)"></div>
     <div class="cart-drawer" id="cart-drawer">
         <div class="cart-header">
             <h3 style="font-size:1rem;">🛒 詢問清單</h3>
@@ -851,7 +872,10 @@
                 });
             }
         });
-
+        // 按 ESC 鍵也能快速關閉購物車
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') toggleCartDrawer(false);
+        });
         function addToCartCurrent() {
             if (!currentItem || currentItem.price === 0) return;
             cart[currentItem.id] = (cart[currentItem.id] || 0) + 1;
@@ -892,11 +916,24 @@
             document.getElementById('cart-drawer-total').innerText = `$${total}`;
         }
 
-        function toggleCartDrawer(forceOpen = false) {
+        function toggleCartDrawer(forceState = null) {
             const drawer = document.getElementById('cart-drawer');
-            if (forceOpen) drawer.classList.add('open');
-            else drawer.classList.toggle('open');
+            const backdrop = document.getElementById('cart-backdrop');
+        
+            // 判斷是要開啟還是關閉
+            const isOpen = (forceState !== null) 
+                ? forceState 
+                : !drawer.classList.contains('open');
+        
+            if (isOpen) {
+                drawer.classList.add('open');
+                backdrop.classList.add('open');
+            } else {
+                drawer.classList.remove('open');
+                backdrop.classList.remove('open');
+            }            
         }
+        
 
         function copyCartText() {
             const allProducts = Object.values(database).flat();

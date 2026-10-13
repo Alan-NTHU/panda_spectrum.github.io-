@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10140430</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10140600</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -616,6 +616,76 @@
             .footer-disclaimer { font-size: 0.68rem; }
             .footer-meta { flex-direction: column; gap: 6px; }
         }
+        /* ========================================================
+           輪播左右切換按鈕（電腦版懸浮箭頭）
+        ======================================================== */
+        .carousel-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 70px;
+            background: rgba(10, 10, 15, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 2rem;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            opacity: 0;                     /* 平常淡出隱藏，維持乾淨畫面 */
+            transition: all 0.25s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* 游標移到輪播框上時浮現按鈕 */
+        .carousel-wrapper:hover .carousel-nav-btn {
+            opacity: 1;
+        }
+        
+        .carousel-nav-btn.prev {
+            left: 0;
+            border-radius: 0 8px 8px 0;
+            border-left: none;
+        }
+        
+        .carousel-nav-btn.next {
+            right: 0;
+            border-radius: 8px 0 0 8px;
+            border-right: none;
+        }
+        
+        .carousel-nav-btn:hover {
+            background: rgba(15, 15, 25, 0.85);
+            color: var(--theme-accent);
+            border-color: var(--theme-accent);
+            box-shadow: 0 0 14px var(--theme-glow);
+        }
+        
+        .carousel-nav-btn:active {
+            transform: translateY(-50%) scale(0.92);
+        }
+        
+        /* 首頁/尾頁時可選的禁用透明度 */
+        .carousel-nav-btn:disabled {
+            opacity: 0.15 !important;
+            cursor: not-allowed;
+            border-color: transparent;
+        }
+        
+        /* 📱 手機版調整：降低阻礙，或稍微半透明常駐 */
+        @media (max-width: 768px) {
+            .carousel-nav-btn {
+                width: 32px;
+                height: 50px;
+                font-size: 1.5rem;
+                opacity: 0.4;             /* 手機版半透明常駐，方便單手點按 */
+                background: rgba(0, 0, 0, 0.35);
+            }
+        }
     </style>
 </head>
 <body data-theme="led">
@@ -674,6 +744,10 @@
         <main class="main-content">
             <div class="carousel-wrapper">
                 <div class="carousel-track" id="carousel-track"></div>
+                <!-- 左右切換按鈕（電腦版點擊直覺換圖） -->
+                <button class="carousel-nav-btn prev" id="carousel-prev-btn" onclick="slideCarousel(-1)" aria-label="上一張">‹</button>
+                <button class="carousel-nav-btn next" id="carousel-next-btn" onclick="slideCarousel(1)" aria-label="下一張">›</button>
+
                 <div class="carousel-indicator" id="carousel-num">1 / 1</div>
             </div>
 
@@ -735,7 +809,7 @@
                 document.getElementById('carousel-num').innerText = `${index + 1} / ${total}`;
             });
         });
-
+    
         async function loadProductsFromCSV() {
             try {
                 const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRU1zcprmzJBiS0jx6Fni4q6jY1aJHAhetNSRl4zRxjwjfiFHfuwRJHxty253tN0uHxWM_3IPCfPbm0/pub?output=csv');
@@ -779,7 +853,7 @@
                 console.error("載入 CSV 失敗：", err);
             }
         }
-
+    
         function setupNavigation() {
             const buttons = document.querySelectorAll('#top-nav .nav-btn');
             buttons.forEach(btn => {
@@ -830,7 +904,26 @@
                 loadItemDetails(items[0]);
             }
         }
-
+        /* 輪播左右切換控制：direction 為 -1 (上一張) 或 1 (下一張) */
+        function slideCarousel(direction) {
+            const track = document.getElementById('carousel-track');
+            if (!track || track.children.length === 0) return;
+        
+            const slideWidth = track.clientWidth;
+            const currentIndex = Math.round(track.scrollLeft / slideWidth);
+            const totalSlides = track.children.length;
+        
+            // 計算目標頁面（支援邊界限制，不超出首尾）
+            let targetIndex = currentIndex + direction;
+            if (targetIndex < 0) targetIndex = 0;
+            if (targetIndex >= totalSlides) targetIndex = totalSlides - 1;
+        
+            // 平滑滾動到目標圖片
+            track.scrollTo({
+                left: targetIndex * slideWidth,
+                behavior: 'smooth'
+            });
+        }
         async function loadItemDetails(item) {
             currentItem = item;
             document.getElementById('product-price').innerText = item.price > 0 ? `$${item.price}` : '客製討論';

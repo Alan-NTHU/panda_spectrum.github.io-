@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10170040</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10170050</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -762,7 +762,7 @@
                 <button class="nav-btn" data-cat="fire" data-theme="fire">火舞</button>
                 <button class="nav-btn" data-cat="portfolio" data-theme="portfolio">作品</button>
                 <button class="nav-btn" data-cat="parts" data-theme="parts">材料</button>
-                <button class="nav-btn" data-cat="agency" data-theme="agency">代理</button>
+                <button class="nav-btn" data-cat="agency" data-theme="agency">品牌</button>
                 <button class="nav-btn" data-cat="service" data-theme="service">服務</button>
                 <button class="nav-btn" data-cat="tutorial" data-theme="tutorial">教學</button>
                 <button class="nav-btn" data-cat="about" data-theme="about">勁梅</button>
@@ -773,8 +773,8 @@
     <audio id="bgm-player" preload="none"></audio>
 
     <div class="container">
-        <aside class="sidebar">
-            //<div class="sidebar-title" id="sidebar-label">項目</div>
+          <aside class="sidebar">
+            <!-- <div class="sidebar-title" id="sidebar-label">項目</div> -->
             <!-- 移除 inline style，交由 CSS 控制 -->
             <div id="sidebar-items" class="sidebar-items"></div>
         </aside>
@@ -1095,8 +1095,8 @@
             const safetyEl = document.getElementById('footer-safety-notice');
             if (safetyEl) {
                 safetyEl.innerText = currentLang === 'zh'
-                    ? '⚠️ 本站火舞耗材與客製電路裝備專為專業演出與訓練設計，請嚴格遵守火具點火與鋰電池充放電安全規範。'
-                    : '⚠️ Props and electronics are engineered for professional flow arts. Users assume full responsibility for fire and electrical safety.';
+                    ? '⚠️ 本站火舞耗材與客製電路裝備專為專業演出與訓練設計，請嚴格遵守火具點火與鋰電池充放電安全規範。⚠️'
+                    : '⚠️ Props and electronics are engineered for professional flow arts. Users assume full responsibility for fire and electrical safety.⚠️';
             }
         }
 

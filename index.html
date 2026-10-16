@@ -113,7 +113,9 @@
             overflow-x: auto;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
-            padding: 20px 0;
+            padding: 25px 0;
+            padding-right: 16px !important;
+            padding-left: 16px !important;
         }
         nav.nav-bar::-webkit-scrollbar { display: none; }
         .nav-btn {
@@ -170,13 +172,13 @@
         }
         @keyframes nav-pulse-glow {
             0% {
-                box-shadow: 0 0 12px var(--theme-accent), 0 0 0 0 var(--theme-glow);
+                box-shadow: 0 0 10px var(--theme-accent), 0 0 0 0 var(--theme-glow);
             }
             50% {
-                box-shadow: 0 0 32px var(--theme-accent), 0 0 0 10px var(--theme-glow);
+                box-shadow: 0 0 26px var(--theme-accent), 0 0 0 12px var(--theme-glow);
             }
             100% {
-                box-shadow: 0 0 12px var(--theme-accent), 0 0 0 0 var(--theme-glow);
+                box-shadow: 0 0 10px var(--theme-accent), 0 0 0 0 var(--theme-glow);
             }
         }
         

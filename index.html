@@ -60,7 +60,7 @@
         header {
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 140;
             background: rgba(10, 10, 15, 0.88);
             backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-color);
@@ -73,7 +73,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            gap: 20px;
         }
 
         .brand {
@@ -120,7 +120,7 @@
             background: transparent;
             border: 1px solid transparent;
             color: var(--text-sub);
-            padding: 5px 12px;
+            padding: 20px 20px;
             border-radius: 16px;
             font-size: 0.85rem;
             cursor: pointer;
@@ -581,17 +581,19 @@
             nav.nav-bar {
                 width: 100%;
                 justify-content: flex-start;
-                padding-bottom: 2px;
+                padding-bottom: 16px;
+                padding-top: 16px;
                 gap: 6px;
                 -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
                 mask-image: linear-gradient(to right, black 85%, transparent 100%);
                 
                 /* 增加右側留白，避免最後一個按鈕被遮罩直接切平 */
                 padding-right: 28px !important;
+                padding-left: 14px !important;
                 scroll-behavior: smooth;
             }
             .nav-btn {
-                padding: 4px 10px;
+                padding: 20px 20px;
                 font-size: 0.78rem;
                 flex-shrink: 0;
                 -webkit-tap-highlight-color: transparent;

@@ -1011,19 +1011,10 @@
             
             track.scrollLeft = 0;
             document.getElementById('carousel-num').innerText = `1 / ${track.children.length}`;
-
-            images.forEach(src => {
-                const slide = document.createElement('div');
-                slide.className = 'carousel-slide';
-                slide.innerHTML = `<img src="${src}" alt="${title}">`;
-                track.appendChild(slide);
-            });
-
-            track.scrollLeft = 0;
-            document.getElementById('carousel-num').innerText = `1 / ${track.children.length}`;
+          
         }
 
-        async function probeSequenceImages(prefix, max = 10) {
+        async function probeSequenceImages(prefix, max = 20) {
             const results = [];
             for (let i = 1; i <= max; i++) {
                 const num = String(i).padStart(2, '0');

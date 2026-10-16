@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10160830</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10160850</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -46,8 +46,8 @@
             top: -160px;
             left: 50%;
             transform: translateX(-50%);
-            width: 950px;
-            height: 950px;
+            width: 1200px;
+            height: 1600px;
             background: radial-gradient(ellipse at center, var(--theme-accent) 0%, transparent 72%);
             opacity: 0.16;
             filter: blur(70px);
@@ -182,12 +182,12 @@
         
         /* 讓當前選中的類別按鈕套用呼吸特效 */
         .nav-btn.active {
-            animation: nav-pulse-glow 2.4s infinite ease-in-out;
+            animation: nav-pulse-glow 1.6s infinite ease-in-out;
         }
         
         /* 同時讓音樂按鈕的呼吸光也跟隨當前主題色變換 */
         .music-btn.playing {
-            animation: nav-pulse-glow 2s infinite ease-in-out;
+            animation: nav-pulse-glow 1.6s infinite ease-in-out;
         }
         .container {
             max-width: 1200px;
@@ -556,8 +556,8 @@
         ======================================================== */
         @media (max-width: 768px) {
             .ambient-glow {
-                width: 580px;
-                height: 580px;
+                width: 600px;
+                height: 800px;
                 top: -80px;
                 filter: blur(50px);
                 opacity: 0.18;
@@ -1272,7 +1272,7 @@
             text += `（備註：長度規格 / 特殊訂製需求請在此填寫）`;
 
             navigator.clipboard.writeText(text).then(() => {
-                alert('清單已成功複製！請直接前往 FB / IG 私訊貼上進行討論 👌');
+                alert('清單已成功複製！請直接前往 FB / IG 私訊貼上進行討論 👌\n也可以自行截圖分享詢問！ ');
             });
         }
     </script>

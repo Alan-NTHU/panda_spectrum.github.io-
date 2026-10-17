@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10180717</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10180720</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -1127,8 +1127,8 @@
                 slide.className = 'carousel-slide';
                 //slide.innerHTML = `<img src="${firstImg}" alt="${title}" loading="lazy" decoding="async">`;
                 slide.innerHTML = `
-                    <img src="${url}" class="slide-ambient-blur" alt="" aria-hidden="true">
-                    <img src="${url}" class="slide-main-img" alt="${title}" loading="lazy" decoding="async">
+                    <img src="${firstImg}" class="slide-ambient-blur" alt="" aria-hidden="true">
+                    <img src="${firstImg}" class="slide-main-img" alt="${title}" loading="lazy" decoding="async">
                 `;                    
                 track.appendChild(slide);
                 updateCarouselIndicator();
@@ -1145,7 +1145,14 @@
                     if (loadId !== currentLoadId) return;
                     const slide = document.createElement('div');
                     slide.className = 'carousel-slide';
-                    slide.innerHTML = `<img src="${url}" alt="${title}" loading="lazy" decoding="async">`;
+                    //slide.innerHTML = `<img src="${url}" alt="${title}" loading="lazy" decoding="async">`;
+                    // slide.innerHTML = `<img src="${url}" alt="${title}" loading="lazy" decoding="async">`;
+                    
+                    // 改為雙層：
+                    slide.innerHTML = `
+                        <img src="${url}" class="slide-ambient-blur" alt="" aria-hidden="true">
+                        <img src="${url}" class="slide-main-img" alt="${title}" loading="lazy" decoding="async">
+                    `;
                     track.appendChild(slide);
                     updateCarouselIndicator();
                 } else {

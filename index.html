@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10180100</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10180645</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -315,7 +315,59 @@
             
 
         }
+        /* 首張 Slide 容器：支援絕對定位層疊 */
+        .hero-slide-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #0b0b12;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         
+        /* 實體背景圖：尺寸、比例完全等同後續輪播圖，絕不走樣 */
+        .hero-backdrop-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* 與第 2、3 張完全相同的 fit 比例 */
+            z-index: 1;
+            user-select: none;
+            -webkit-user-drag: none;
+            opacity: 0;
+            transition: opacity 0.4s ease; /* 圖片載入後平滑淡入 */
+        }
+        .hero-backdrop-img.loaded {
+            opacity: 1;
+        }
+        
+        /* 浮動文字資訊層：覆蓋於圖片之上，帶黑底漸層保護文字 */
+        .hero-overlay-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            /* 漸層：左側維持深黑襯底確保文字清晰，右側漸透露出道具圖 */
+            background: linear-gradient(to right, rgba(11, 11, 18, 0.95) 28%, rgba(11, 11, 18, 0.65) 65%, rgba(11, 11, 18, 0.25) 100%);
+            border-left: 3px solid var(--theme-accent);
+            overflow-y: auto;
+        }
+        
+        /* 手機版排版微調 */
+        @media (max-width: 768px) {
+            .hero-overlay-content {
+                padding: 16px;
+                background: linear-gradient(to top, rgba(11, 11, 18, 0.95) 45%, rgba(11, 11, 18, 0.65) 100%);
+            }
+        }
         /* 強化首頁文字的陰影對比，防止底圖過亮時吃字 */
         .hero-title {
             font-size: 1.45rem;
@@ -1000,18 +1052,25 @@
                 : '';
         
             // ⚡ 關鍵改變：不等待 (No await)！瞬間將文字卡片掛載上畫面
+            // ⚡ 第一張 Slide：實體圖片層 + 浮動文字層
             const heroSlide = document.createElement('div');
             heroSlide.className = 'carousel-slide';
             heroSlide.innerHTML = `
-                <div class="hero-card" id="current-hero-card">
-                    <div>
-                        <div class="hero-tags">
-                            ${tags.map(t => `<span class="hero-tag">${t}</span>`).join('')}
+                <div class="hero-slide-container">
+                    <!-- 底層：實體圖片（預設隱藏，等抓到 01 再顯示） -->
+                    <img class="hero-backdrop-img" id="current-hero-img" alt="${title}" />
+            
+                    <!-- 頂層：文字資訊層 -->
+                    <div class="hero-overlay-content">
+                        <div>
+                            <div class="hero-tags">
+                                ${tags.map(t => `<span class="hero-tag">${t}</span>`).join('')}
+                            </div>
+                            <div class="hero-title">${title}</div>
+                            <div class="hero-desc">${desc}</div>
                         </div>
-                        <div class="hero-title">${title}</div>
-                        <div class="hero-desc">${desc}</div>
+                        ${manualBtnHtml}
                     </div>
-                    ${manualBtnHtml}
                 </div>
             `;
             track.appendChild(heroSlide);
@@ -1024,13 +1083,14 @@
         async function loadImagesInBackground(item, title, loadId) {
             // 1. 背景探測 01 號圖
             const firstImg = await findImageWithExt(`${item.imgPrefix}01`);
-            if (loadId !== currentLoadId) return; // 使用者已切換其他商品則退出
+            if (loadId !== currentLoadId) return;
         
             if (firstImg) {
-                // 找到了 01 號圖，平滑注入為第一張卡片的底圖
-                const heroCard = document.getElementById('current-hero-card');
-                if (heroCard) {
-                    heroCard.style.backgroundImage = `linear-gradient(to right, rgba(11, 11, 18, 0.94) 30%, rgba(11, 11, 18, 0.6) 70%, rgba(11, 11, 18, 0.2) 100%), url('${firstImg}')`;
+                // 找到了 01 號圖：注入實體底圖並加上 loaded 淡入
+                const heroImg = document.getElementById('current-hero-img');
+                if (heroImg) {
+                    heroImg.src = firstImg;
+                    heroImg.classList.add('loaded');
                 }
         
                 // 同時將純圖版 01 加入第二張 Slide
@@ -1042,7 +1102,7 @@
                 updateCarouselIndicator();
             }
         
-            // 2. 依序探測 02 ~ 15
+            // 2. 依序探測 02 ~ 15 (保持不變)
             const track = document.getElementById('carousel-track');
             for (let i = 2; i <= 15; i++) {
                 if (loadId !== currentLoadId) return;

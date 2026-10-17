@@ -1020,6 +1020,8 @@
                 </div>
             `;
             track.appendChild(heroSlide);
+            // ⚡ 第三步：後台背景追加 01, 02, 03...，完全不阻塞畫面！
+            appendRemainingImages(item.imgPrefix, title, firstImg);    
         }
         
         // 在背景慢慢把後續圖片載入進輪播列中

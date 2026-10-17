@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10170050</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10171350</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -1017,15 +1017,32 @@
             document.getElementById('carousel-num').innerText = `1 / ${track.children.length}`;
           
         }
-
+        
         async function probeSequenceImages(prefix, max = 20) {
             const results = [];
+            // 支援的副檔名清單（依優先順序嘗試）
+            const extensions = ['jpg', 'png', 'webp', 'JPG', 'PNG', 'jpeg'];
+        
             for (let i = 1; i <= max; i++) {
                 const num = String(i).padStart(2, '0');
-                const url = `${prefix}${num}.jpg`;
-                const exists = await checkImageExists(url);
-                if (exists) results.push(url);
-                else break;
+                let matchedUrl = null;
+        
+                // 輪流測試該編號是否存在支援的副檔名
+                for (const ext of extensions) {
+                    const testUrl = `${prefix}${num}.${ext}`;
+                    const exists = await checkImageExists(testUrl);
+                    if (exists) {
+                        matchedUrl = testUrl;
+                        break; // 找到對應格式即停止測試其他副檔名
+                    }
+                }
+        
+                if (matchedUrl) {
+                    results.push(matchedUrl);
+                } else {
+                    // 當前序號完全找不到任何圖片時，中斷後續檢查
+                    break;
+                }
             }
             return results;
         }

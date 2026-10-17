@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10180720</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10180725</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -1125,11 +1125,26 @@
                 const track = document.getElementById('carousel-track');
                 const slide = document.createElement('div');
                 slide.className = 'carousel-slide';
-                //slide.innerHTML = `<img src="${firstImg}" alt="${title}" loading="lazy" decoding="async">`;
+                
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = title;
+                img.loading = 'lazy';
+                img.decoding = 'async';
+                img.onload = () => {
+                    // 圖片載入完成後，自動將該 Slide 的背景設為邊緣平均色
+                    const edgeColor = getEdgeAverageColor(img);
+                    slide.style.backgroundColor = edgeColor;
+                };
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `<img src="${firstImg}" alt="${title}" loading="lazy" decoding="async">`;
+                /*
                 slide.innerHTML = `
-                    <img src="${firstImg}" class="slide-ambient-blur" alt="" aria-hidden="true">
-                    <img src="${firstImg}" class="slide-main-img" alt="${title}" loading="lazy" decoding="async">
-                `;                    
+                    <img src="${url}" class="slide-ambient-blur" alt="" aria-hidden="true">
+                    <img src="${url}" class="slide-main-img" alt="${title}" loading="lazy" decoding="async">
+                `;  
+                */
+                slide.appendChild(img);
                 track.appendChild(slide);
                 updateCarouselIndicator();
             }
@@ -1145,14 +1160,7 @@
                     if (loadId !== currentLoadId) return;
                     const slide = document.createElement('div');
                     slide.className = 'carousel-slide';
-                    //slide.innerHTML = `<img src="${url}" alt="${title}" loading="lazy" decoding="async">`;
-                    // slide.innerHTML = `<img src="${url}" alt="${title}" loading="lazy" decoding="async">`;
-                    
-                    // 改為雙層：
-                    slide.innerHTML = `
-                        <img src="${url}" class="slide-ambient-blur" alt="" aria-hidden="true">
-                        <img src="${url}" class="slide-main-img" alt="${title}" loading="lazy" decoding="async">
-                    `;
+                    slide.innerHTML = `<img src="${url}" alt="${title}" loading="lazy" decoding="async">`;
                     track.appendChild(slide);
                     updateCarouselIndicator();
                 } else {
@@ -1287,7 +1295,43 @@
             const numStr = String(randomIndex).padStart(2, '0');
             return `audio/bgm${numStr}.mp3`;
         }
+        // 計算圖片周圍邊緣像素的平均色彩 (HEX)
+        function getEdgeAverageColor(imgElement) {
+            try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                const w = 40; // 採樣縮圖寬
+                const h = 40; // 採樣縮圖高
+                canvas.width = w;
+                canvas.height = h;
         
+                ctx.drawImage(imgElement, 0, 0, w, h);
+                const data = ctx.getImageData(0, 0, w, h).data;
+        
+                let r = 0, g = 0, b = 0, count = 0;
+        
+                // 僅取最外圈一圈邊緣的像素
+                for (let x = 0; x < w; x++) {
+                    for (let y = 0; y < h; y++) {
+                        if (x === 0 || x === w - 1 || y === 0 || y === h - 1) {
+                            const idx = (y * w + x) * 4;
+                            r += data[idx];
+                            g += data[idx + 1];
+                            b += data[idx + 2];
+                            count++;
+                        }
+                    }
+                }
+                r = Math.round(r / count);
+                g = Math.round(g / count);
+                b = Math.round(b / count);
+        
+                return `rgb(${r}, ${g}, ${b})`;
+            } catch (e) {
+                // 若遇到 CORS 等問題時降級為預設黑底
+                return '#0b0b12';
+            }
+        }
         function toggleAudio() {
             const audio = document.getElementById('bgm-player');
             const btn = document.getElementById('music-btn');

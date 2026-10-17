@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10171350</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10171420</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -298,17 +298,17 @@
             overflow-y: auto;
             position: relative;
             border-left: 3px solid var(--theme-accent);
+            background-color: #0b0b12; /* 深黑底 */
         
-            /* 核心背景設定：背景圖片 + 暗色漸層遮罩，確保文字 100% 清晰 */
-            background-size: cover;
-            background-position: center;
+            /* 關鍵：使用 contain 讓 PNG 道具不被強行放大失真，居右放置 */
+            background-size: auto 85%, cover;
+            background-position: right 10% center, center;
             background-repeat: no-repeat;
-            /* 漸層：左側與底部加深，避免亮色圖片干擾文字 */
+            
+            /* 漸層覆蓋：左側深黑保護文字，右側透出透明/去背 PNG */
             background-image: 
-                linear-gradient(to right, rgba(10, 10, 15, 0.92) 20%, rgba(10, 10, 18, 0.75) 60%, rgba(10, 10, 18, 0.45) 100%),
+                linear-gradient(to right, rgba(11, 11, 18, 0.96) 35%, rgba(11, 11, 18, 0.6) 70%, transparent 100%),
                 var(--hero-bg-img, none);
-            backdrop-filter: blur(2px);
-            transition: background-image 0.4s ease;
         }
         
         /* 強化首頁文字的陰影對比，防止底圖過亮時吃字 */
@@ -341,10 +341,12 @@
         
         /* 手機版適度加強遮罩濃度，保證小螢幕閱讀性 */
         @media (max-width: 768px) {
-            .hero-card {
-                padding: 18px;
+        .hero-card {
+                padding: 16px;
+                background-size: auto 60%, cover;
+                background-position: center bottom 10px, center;
                 background-image: 
-                    linear-gradient(to bottom, rgba(10, 10, 15, 0.9) 0%, rgba(10, 10, 18, 0.8) 100%),
+                    linear-gradient(to top, rgba(11, 11, 18, 0.95) 45%, rgba(11, 11, 18, 0.65) 100%),
                     var(--hero-bg-img, none);
             }
         }
@@ -962,37 +964,43 @@
                 behavior: 'smooth'
             });
         }
+        // 快速探測單張圖片（嘗試常見副檔名）
+        async function findImageWithExt(basePath) {
+            const extensions = ['jpg', 'png', 'webp', 'JPG', 'PNG'];
+            for (const ext of extensions) {
+                const url = `${basePath}.${ext}`;
+                const exists = await checkImageExists(url);
+                if (exists) return url;
+            }
+            return null;
+        }
+        
         async function loadItemDetails(item) {
             currentItem = item;
             document.getElementById('product-price').innerText = item.price > 0 ? `$${item.price}` : '客製討論';
             document.getElementById('dive-text-1').innerText = currentLang === 'zh' ? item.dive1_zh : item.dive1_en;
             document.getElementById('dive-text-2').innerText = currentLang === 'zh' ? item.dive2_zh : item.dive2_en;
-
+        
             const track = document.getElementById('carousel-track');
             track.innerHTML = '';
-
+        
             const tags = currentLang === 'zh' ? item.tags_zh : item.tags_en;
             const title = currentLang === 'zh' ? item.name_zh : item.name_en;
             const desc = currentLang === 'zh' ? item.desc_zh : item.desc_en;
-
+        
             const manualBtnHtml = (item.manualUrl && item.manualUrl.trim() !== "")
                 ? `<a href="${item.manualUrl}" target="_blank" class="manual-link-btn">📖 ${currentLang === 'zh' ? '詳細介紹' : 'Documentation'} ↗</a>` 
                 : '';
-
-            // 探測該商品的所有圖片序列
-            const images = await probeSequenceImages(item.imgPrefix);
-            if (images.length === 0) {
-                images.push(createSvgFallback(title));
-            }
-            
-            // 取得第一張圖片作為背景海報
-            const posterImg = images[0];
-            
-            // 建立首張 Slide (圖文海報)
+        
+            // ⚡ 第一步：先嘗試拿 01 號圖作為背景海報（只找 01，最快 10ms 內完成）
+            const firstImg = await findImageWithExt(`${item.imgPrefix}01`);
+            const bgStyle = firstImg ? `style="--hero-bg-img: url('${firstImg}');"` : '';
+        
+            // ⚡ 第二步：瞬間渲染第一張 Slide（完全不卡頓！）
             const heroSlide = document.createElement('div');
             heroSlide.className = 'carousel-slide';
             heroSlide.innerHTML = `
-                <div class="hero-card" style="--hero-bg-img: url('${posterImg}');">
+                <div class="hero-card" ${bgStyle}>
                     <div>
                         <div class="hero-tags">
                             ${tags.map(t => `<span class="hero-tag">${t}</span>`).join('')}
@@ -1004,47 +1012,40 @@
                 </div>
             `;
             track.appendChild(heroSlide);
-            
-            // 接著依序將所有純圖片加入輪播軌道中 (01.jpg, 02.jpg...)
-            images.forEach(src => {
-                const slide = document.createElement('div');
-                slide.className = 'carousel-slide';
-                slide.innerHTML = `<img src="${src}" alt="${title}" loading="lazy" decoding="async">`;
-                track.appendChild(slide);
-            });
-            
-            track.scrollLeft = 0;
-            document.getElementById('carousel-num').innerText = `1 / ${track.children.length}`;
-          
+            document.getElementById('carousel-num').innerText = `1 / 1`;
+        
+            // ⚡ 第三步：後台背景追加 01, 02, 03...，完全不阻塞畫面！
+            appendRemainingImages(item.imgPrefix, title, firstImg);
         }
         
-        async function probeSequenceImages(prefix, max = 20) {
-            const results = [];
-            // 支援的副檔名清單（依優先順序嘗試）
-            const extensions = ['jpg', 'png', 'webp', 'JPG', 'PNG', 'jpeg'];
+        // 在背景慢慢把後續圖片載入進輪播列中
+        async function appendRemainingImages(prefix, title, firstImg) {
+            const track = document.getElementById('carousel-track');
+            
+            // 如果有 01，先塞入 01 作為第二張純圖
+            if (firstImg) {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `<img src="${firstImg}" alt="${title}" loading="lazy" decoding="async">`;
+                track.appendChild(slide);
+                document.getElementById('carousel-num').innerText = `1 / ${track.children.length}`;
+            }
         
-            for (let i = 1; i <= max; i++) {
+            // 從 02 號開始往後探測到 15 號
+            for (let i = 2; i <= 20; i++) {
                 const num = String(i).padStart(2, '0');
-                let matchedUrl = null;
-        
-                // 輪流測試該編號是否存在支援的副檔名
-                for (const ext of extensions) {
-                    const testUrl = `${prefix}${num}.${ext}`;
-                    const exists = await checkImageExists(testUrl);
-                    if (exists) {
-                        matchedUrl = testUrl;
-                        break; // 找到對應格式即停止測試其他副檔名
-                    }
-                }
-        
-                if (matchedUrl) {
-                    results.push(matchedUrl);
+                const url = await findImageWithExt(`${prefix}${num}`);
+                if (url) {
+                    const slide = document.createElement('div');
+                    slide.className = 'carousel-slide';
+                    slide.innerHTML = `<img src="${url}" alt="${title}" loading="lazy" decoding="async">`;
+                    track.appendChild(slide);
+                    document.getElementById('carousel-num').innerText = `1 / ${track.children.length}`;
                 } else {
-                    // 當前序號完全找不到任何圖片時，中斷後續檢查
+                    // 斷號即停止
                     break;
                 }
             }
-            return results;
         }
 
         function checkImageExists(url) {

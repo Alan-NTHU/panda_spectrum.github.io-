@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10171440</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10171510</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -302,14 +302,17 @@
         
             /* 關鍵：使用 contain 讓 PNG 道具不被強行放大失真，居右放置 */
             /* 讓右側的 PNG 道具完整呈現不被硬切，位置靠右置中 */
-                background-repeat: no-repeat;
-                background-position: right 8% center;
-                background-size: contain;
-            
-            /* 漸層覆蓋：左側深黑保護文字，右側透出透明/去背 PNG */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* 漸層：左側與底部加深，避免亮色圖片干擾文字 */
             background-image: 
-                linear-gradient(to right, rgba(11, 11, 18, 0.96) 35%, rgba(11, 11, 18, 0.6) 70%, transparent 100%),
+                linear-gradient(to right, rgba(10, 10, 15, 0.92) 20%, rgba(10, 10, 18, 0.75) 60%, rgba(10, 10, 18, 0.45) 100%),
                 var(--hero-bg-img, none);
+            backdrop-filter: blur(2px);
+            transition: background-image 0.4s ease;
+            
+
         }
         
         /* 強化首頁文字的陰影對比，防止底圖過亮時吃字 */
@@ -839,13 +842,10 @@
             setupNavigation();
             await loadProductsFromCSV();
             renderCategory(currentCat);
+
             
             const track = document.getElementById('carousel-track');
-            track.addEventListener('scroll', () => {
-                const index = Math.round(track.scrollLeft / track.clientWidth);
-                const total = track.children.length;
-                document.getElementById('carousel-num').innerText = `${index + 1} / ${total}`;
-            });
+            track.addEventListener('scroll', updateCarouselIndicator);
         });
     
         async function loadProductsFromCSV() {
@@ -973,15 +973,26 @@
             }
             return null;
         }
+        // 用於防競態：標記目前最新點擊的載入序號
+        let currentLoadId = 0;
         
         async function loadItemDetails(item) {
             currentItem = item;
+            const thisLoadId = ++currentLoadId; // 每點一次商品，ID + 1
+        
             document.getElementById('product-price').innerText = item.price > 0 ? `$${item.price}` : '客製討論';
             document.getElementById('dive-text-1').innerText = currentLang === 'zh' ? item.dive1_zh : item.dive1_en;
             document.getElementById('dive-text-2').innerText = currentLang === 'zh' ? item.dive2_zh : item.dive2_en;
         
             const track = document.getElementById('carousel-track');
+            
+            // 1. 強制重置滾動位置歸零
             track.innerHTML = '';
+            track.scrollLeft = 0;
+            track.scrollTo({ left: 0, behavior: 'instant' });
+        
+            // 2. 頁碼立刻強制歸零為 1 / 1
+            document.getElementById('carousel-num').innerText = '1 / 1';
         
             const tags = currentLang === 'zh' ? item.tags_zh : item.tags_en;
             const title = currentLang === 'zh' ? item.name_zh : item.name_en;
@@ -991,22 +1002,19 @@
                 ? `<a href="${item.manualUrl}" target="_blank" class="manual-link-btn">📖 ${currentLang === 'zh' ? '詳細介紹' : 'Documentation'} ↗</a>` 
                 : '';
         
-            // ⚡ 第一步：先嘗試拿 01 號圖作為背景海報（只找 01，最快 10ms 內完成）
-             const firstImg = await findImageWithExt(`${item.imgPrefix}01`);
-            
-            // 🔍 除錯用：打開 F12 Console 就能確認有沒有抓到這張圖
-            console.log(`[Item: ${item.id}] 首張底圖偵測結果:`, firstImg);
-            
-            // 建立首張 Slide (圖文海報)
-            const heroSlide = document.createElement('div');
-            heroSlide.className = 'carousel-slide';
-            document.getElementById('carousel-num').innerText = `1 / 1`;    
-            // 關鍵：如果找到圖，直接把 background-image 注入行內樣式，最直接且絕不被 CSS 變數解析失敗影響
+            // 建議第一張統一抓 01.jpg
+            const firstImg = await findImageWithExt(`${item.imgPrefix}01`);
+        
+            // 如果使用者在等待的幾毫秒內又點了別的商品，立刻放棄此次渲染
+            if (thisLoadId !== currentLoadId) return;
+        
             let heroCardStyle = '';
             if (firstImg) {
                 heroCardStyle = `style="background-image: linear-gradient(to right, rgba(11, 11, 18, 0.94) 30%, rgba(11, 11, 18, 0.6) 70%, rgba(11, 11, 18, 0.2) 100%), url('${firstImg}');"`;
             }
-            
+        
+            const heroSlide = document.createElement('div');
+            heroSlide.className = 'carousel-slide';
             heroSlide.innerHTML = `
                 <div class="hero-card" ${heroCardStyle}>
                     <div>
@@ -1020,38 +1028,55 @@
                 </div>
             `;
             track.appendChild(heroSlide);
-            // ⚡ 第三步：後台背景追加 01, 02, 03...，完全不阻塞畫面！
-            appendRemainingImages(item.imgPrefix, title, firstImg);    
+        
+            // 再次確保第一張定位在最左側
+            track.scrollLeft = 0;
+        
+            // 3. 傳入 thisLoadId，在背景追加後續圖片
+            appendRemainingImages(item.imgPrefix, title, firstImg, thisLoadId);
         }
         
-        // 在背景慢慢把後續圖片載入進輪播列中
-        async function appendRemainingImages(prefix, title, firstImg) {
+        async function appendRemainingImages(prefix, title, firstImg, loadId) {
             const track = document.getElementById('carousel-track');
-            
-            // 如果有 01，先塞入 01 作為第二張純圖
+        
+            // 放入純圖版 01.jpg
             if (firstImg) {
+                if (loadId !== currentLoadId) return; // 已切換到其他商品則終止
                 const slide = document.createElement('div');
                 slide.className = 'carousel-slide';
                 slide.innerHTML = `<img src="${firstImg}" alt="${title}" loading="lazy" decoding="async">`;
                 track.appendChild(slide);
-                document.getElementById('carousel-num').innerText = `1 / ${track.children.length}`;
+                updateCarouselIndicator();
             }
         
-            // 從 02 號開始往後探測到 15 號
-            for (let i = 2; i <= 20; i++) {
+            // 依序探測 02 ~ 15
+            for (let i = 2; i <= 15; i++) {
+                if (loadId !== currentLoadId) return; // 隨時檢查，切換商品立刻斷開
+        
                 const num = String(i).padStart(2, '0');
                 const url = await findImageWithExt(`${prefix}${num}`);
+                
                 if (url) {
+                    if (loadId !== currentLoadId) return;
                     const slide = document.createElement('div');
                     slide.className = 'carousel-slide';
                     slide.innerHTML = `<img src="${url}" alt="${title}" loading="lazy" decoding="async">`;
                     track.appendChild(slide);
-                    document.getElementById('carousel-num').innerText = `1 / ${track.children.length}`;
+                    updateCarouselIndicator();
                 } else {
-                    // 斷號即停止
-                    break;
+                    break; // 序號斷號即停
                 }
             }
+        }
+        
+        // 統一計算並刷新頁碼指示器
+        function updateCarouselIndicator() {
+            const track = document.getElementById('carousel-track');
+            if (!track || track.children.length === 0) return;
+            const slideWidth = track.clientWidth || 1;
+            const currentIndex = Math.round(track.scrollLeft / slideWidth);
+            const total = track.children.length;
+            document.getElementById('carousel-num').innerText = `${currentIndex + 1} / ${total}`;
         }
 
         function checkImageExists(url) {
@@ -1180,6 +1205,13 @@
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') toggleCartDrawer(false);
+            else if (e.key === 'ArrowLeft') {
+                slideCarousel(-1);
+            } 
+            // 按鍵盤「向右鍵」：切換下一張圖
+            else if (e.key === 'ArrowRight') {
+                slideCarousel(1);
+            }
         });
 
         function addToCartCurrent() {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10171430</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10171440</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -1000,7 +1000,7 @@
             // 建立首張 Slide (圖文海報)
             const heroSlide = document.createElement('div');
             heroSlide.className = 'carousel-slide';
-            
+            document.getElementById('carousel-num').innerText = `1 / 1`;    
             // 關鍵：如果找到圖，直接把 background-image 注入行內樣式，最直接且絕不被 CSS 變數解析失敗影響
             let heroCardStyle = '';
             if (firstImg) {

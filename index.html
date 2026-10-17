@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10171510</title>
+    <title>勁梅演光 Panda'Spectrum - 專業Flow Art 道具工作室　v.10180100</title>
     <!-- 本地引入 papaparse -->
     <script src="papaparse.min.js"></script>
     <style>
@@ -975,23 +976,19 @@
         }
         // 用於防競態：標記目前最新點擊的載入序號
         let currentLoadId = 0;
-        
         async function loadItemDetails(item) {
             currentItem = item;
-            const thisLoadId = ++currentLoadId; // 每點一次商品，ID + 1
+            const thisLoadId = ++currentLoadId;
         
+            // 更新單價與規格特性
             document.getElementById('product-price').innerText = item.price > 0 ? `$${item.price}` : '客製討論';
             document.getElementById('dive-text-1').innerText = currentLang === 'zh' ? item.dive1_zh : item.dive1_en;
             document.getElementById('dive-text-2').innerText = currentLang === 'zh' ? item.dive2_zh : item.dive2_en;
         
             const track = document.getElementById('carousel-track');
-            
-            // 1. 強制重置滾動位置歸零
             track.innerHTML = '';
             track.scrollLeft = 0;
             track.scrollTo({ left: 0, behavior: 'instant' });
-        
-            // 2. 頁碼立刻強制歸零為 1 / 1
             document.getElementById('carousel-num').innerText = '1 / 1';
         
             const tags = currentLang === 'zh' ? item.tags_zh : item.tags_en;
@@ -1002,21 +999,11 @@
                 ? `<a href="${item.manualUrl}" target="_blank" class="manual-link-btn">📖 ${currentLang === 'zh' ? '詳細介紹' : 'Documentation'} ↗</a>` 
                 : '';
         
-            // 建議第一張統一抓 01.jpg
-            const firstImg = await findImageWithExt(`${item.imgPrefix}01`);
-        
-            // 如果使用者在等待的幾毫秒內又點了別的商品，立刻放棄此次渲染
-            if (thisLoadId !== currentLoadId) return;
-        
-            let heroCardStyle = '';
-            if (firstImg) {
-                heroCardStyle = `style="background-image: linear-gradient(to right, rgba(11, 11, 18, 0.94) 30%, rgba(11, 11, 18, 0.6) 70%, rgba(11, 11, 18, 0.2) 100%), url('${firstImg}');"`;
-            }
-        
+            // ⚡ 關鍵改變：不等待 (No await)！瞬間將文字卡片掛載上畫面
             const heroSlide = document.createElement('div');
             heroSlide.className = 'carousel-slide';
             heroSlide.innerHTML = `
-                <div class="hero-card" ${heroCardStyle}>
+                <div class="hero-card" id="current-hero-card">
                     <div>
                         <div class="hero-tags">
                             ${tags.map(t => `<span class="hero-tag">${t}</span>`).join('')}
@@ -1029,11 +1016,50 @@
             `;
             track.appendChild(heroSlide);
         
-            // 再次確保第一張定位在最左側
-            track.scrollLeft = 0;
+            // ⚡ 背景非同步探測底圖與後續圖片（完全不阻塞上面的文字呈現）
+            loadImagesInBackground(item, title, thisLoadId);
+        }
         
-            // 3. 傳入 thisLoadId，在背景追加後續圖片
-            appendRemainingImages(item.imgPrefix, title, firstImg, thisLoadId);
+        // 在背景探測圖片，抓到了才注入
+        async function loadImagesInBackground(item, title, loadId) {
+            // 1. 背景探測 01 號圖
+            const firstImg = await findImageWithExt(`${item.imgPrefix}01`);
+            if (loadId !== currentLoadId) return; // 使用者已切換其他商品則退出
+        
+            if (firstImg) {
+                // 找到了 01 號圖，平滑注入為第一張卡片的底圖
+                const heroCard = document.getElementById('current-hero-card');
+                if (heroCard) {
+                    heroCard.style.backgroundImage = `linear-gradient(to right, rgba(11, 11, 18, 0.94) 30%, rgba(11, 11, 18, 0.6) 70%, rgba(11, 11, 18, 0.2) 100%), url('${firstImg}')`;
+                }
+        
+                // 同時將純圖版 01 加入第二張 Slide
+                const track = document.getElementById('carousel-track');
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `<img src="${firstImg}" alt="${title}" loading="lazy" decoding="async">`;
+                track.appendChild(slide);
+                updateCarouselIndicator();
+            }
+        
+            // 2. 依序探測 02 ~ 15
+            const track = document.getElementById('carousel-track');
+            for (let i = 2; i <= 15; i++) {
+                if (loadId !== currentLoadId) return;
+                const num = String(i).padStart(2, '0');
+                const url = await findImageWithExt(`${item.imgPrefix}${num}`);
+                
+                if (url) {
+                    if (loadId !== currentLoadId) return;
+                    const slide = document.createElement('div');
+                    slide.className = 'carousel-slide';
+                    slide.innerHTML = `<img src="${url}" alt="${title}" loading="lazy" decoding="async">`;
+                    track.appendChild(slide);
+                    updateCarouselIndicator();
+                } else {
+                    break;
+                }
+            }
         }
         
         async function appendRemainingImages(prefix, title, firstImg, loadId) {
